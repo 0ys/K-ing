@@ -1,5 +1,6 @@
 package com.king.backend.domain.place.controller;
 
+import com.king.backend.domain.place.dto.response.PlaceIdResponseDto;
 import com.king.backend.global.util.RedisUtil;
 import com.king.backend.domain.place.dto.response.PlaceDetailResponseDto;
 import com.king.backend.domain.place.errorcode.PlaceErrorCode;
@@ -12,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/place")
@@ -72,5 +70,19 @@ public class PlaceController {
         }catch(Exception e){
             throw new CustomException(PlaceErrorCode.PLACE_NOT_FOUND);
         }
+    }
+
+    @Operation(summary = "장소 이름으로 placeId 조회 API")
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<PlaceIdResponseDto>> getPlaceIdByName(@RequestParam String name) {
+        log.info("GET /api/place/search 요청 처리 시작 - 장소명: {}", name);
+
+        PlaceIdResponseDto responseDto = placeService.getPlaceIdByName(name);
+        if (responseDto == null) {
+            throw new CustomException(PlaceErrorCode.PLACE_NOT_FOUND);
+        }
+
+        log.info("GET /api/place/search 요청 완료 - placeId: {}", responseDto.getPlaceId());
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(responseDto));
     }
 }

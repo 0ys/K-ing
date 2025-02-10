@@ -2,6 +2,7 @@ package com.king.backend.domain.place.service;
 
 import com.king.backend.domain.content.entity.Content;
 import com.king.backend.domain.place.dto.response.PlaceDetailResponseDto;
+import com.king.backend.domain.place.dto.response.PlaceIdResponseDto;
 import com.king.backend.domain.place.entity.Place;
 import com.king.backend.domain.place.entity.PlaceContent;
 import com.king.backend.domain.place.errorcode.PlaceErrorCode;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,6 +58,16 @@ public class PlaceService {
                 content.getType(),
                 placeContent.getDescription()
         );
+    }
+
+    public PlaceIdResponseDto getPlaceIdByName(String name) {
+        Optional<Place> place = placeRepository.findByName(name);
+
+        if (place.isEmpty()) {
+            throw new CustomException(PlaceErrorCode.PLACE_NOT_FOUND);
+        }
+
+        return new PlaceIdResponseDto(place.get().getId());
     }
 
 }

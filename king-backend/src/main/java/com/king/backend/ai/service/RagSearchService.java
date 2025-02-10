@@ -3,8 +3,9 @@ package com.king.backend.ai.service;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
-import com.king.backend.ai.dto.PlaceSearchRequestDto;
+import com.king.backend.ai.dto.CurationSearchResponseDto;
 import com.king.backend.ai.dto.PlaceSearchResponseDto;
+import com.king.backend.ai.dto.RagSearchRequestDto;
 import com.king.backend.search.config.ElasticsearchConstants;
 import com.king.backend.search.entity.SearchDocument;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class RagSearchService {
      * - place의 name, details, address 및 연결된(associated) Cast/Content의 각 이름/설명 필드를 대상으로 match_phrase 쿼리 적용
      * - 반환 결과의 relatedName, description은 연결된 Cast/Content 중 키워드가 완전한 단어로 포함된 항목의 값을 사용 (발견되지 않으면 빈 값)
      */
-    public PlaceSearchResponseDto search(PlaceSearchRequestDto requestDto) {
+    public PlaceSearchResponseDto search(RagSearchRequestDto requestDto) {
         try {
             // ES 검색 쿼리 구성
             SearchRequest searchRequest = SearchRequest.of(s -> s
@@ -120,5 +121,9 @@ public class RagSearchService {
         } catch (IOException e) {
             throw new RuntimeException("Elasticsearch 검색 실패", e);
         }
+    }
+
+    public CurationSearchResponseDto searchCurations(RagSearchRequestDto requestDto) {
+        return null;
     }
 }

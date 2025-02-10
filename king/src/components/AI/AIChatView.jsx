@@ -6,11 +6,13 @@ import KingIcon from '../../assets/icons/king_character.png';
 import RefreshIcon from '../../assets/icons/refresh.png';
 import { deleteChatHistory, getChatHistory, saveChatHistory } from '../../lib/chatbot';
 import { splitIntoSentences } from '../../util/chatbot';
+import BackButton from '../common/button/BackButton';
+import ButtonMessageBubbleComponent from './ButtonMessageBubbleComponent';
 import TypingIndicator from './TypingIndicator';
 import useStreamingMessages from './useStreamingMessages';
 
 const AIChatView = () => {
-  const { messages, isTyping, updateMessages, setMessages } = useStreamingMessages();
+  const { messages, isTyping, updateMessages, setMessages, setIsTyping } = useStreamingMessages();
   const [newMessage, setNewMessage] = useState('');
   const [isBotSelected, setIsBotSelected] = useState(false);
   const [currentApi, setCurrentApi] = useState('');
@@ -58,30 +60,36 @@ const AIChatView = () => {
       console.error('❌ WebSocket 연결 실패: 토큰 없음');
       return;
     }
-    socketRef.current = new WebSocket(`${currentApi}?token=${token}`);
 
-    socketRef.current.onopen = () => {
+    const ws = new WebSocket(`${currentApi}?token=${token}`);
+
+    ws.onopen = () => {
       console.log('✅ WebSocket 연결됨');
+      socketRef.current = ws; // onopen 이후에만 socketRef에 저장
     };
 
-    socketRef.current.onmessage = (event) => {
+    ws.onmessage = (event) => {
       //console.log('📩 메시지 수신:', event.data);
       updateMessages(event.data);
     };
 
-    socketRef.current.onclose = () => {
+    ws.onclose = () => {
       console.log('❌ WebSocket 연결 종료됨');
+      socketRef.current = null;
     };
 
-    socketRef.current.onerror = (error) => {
+    ws.onerror = (error) => {
       console.error('⚠️ WebSocket 오류 발생:', error);
     };
 
     return () => {
-      socketRef.current?.close();
-      socketRef.current = null;
+      if (socketRef.current === ws) {
+        //console.log('🔌 WebSocket 연결 해제 중...');
+        socketRef.current?.close();
+        socketRef.current = null;
+      }
     };
-  }, [isBotSelected, updateMessages]);
+  }, [isBotSelected]);
 
   const sendMessage = async () => {
     if (
@@ -96,6 +104,7 @@ const AIChatView = () => {
     const userMessage = { text: newMessage, sender: 'user', type: 'message' };
     setMessages((prev) => [...prev, userMessage]);
     setNewMessage('');
+    setIsTyping(true); // ✅ 유저 메시지 전송 시 타이핑 표시
 
     socketRef.current.send(newMessage);
   };
@@ -158,7 +167,6 @@ const AIChatView = () => {
     setIsBotSelected(true);
 
     updateMessages(aiMessage);
-    updateMessages('[END]');
     await saveChatHistory('assistant', aiMessage, 'message');
   };
 
@@ -216,6 +224,8 @@ const AIChatView = () => {
                   </ButtonContainer>
                 )}
               </ChatBotContainer>
+            ) : message.sender === 'recommend' ? (
+              <ButtonMessageBubbleComponent message={message} />
             ) : (
               <MessageBubble
                 $sender={message.sender}
@@ -334,6 +344,38 @@ const MessageBubble = styled.div`
   white-space: pre-wrap; // 줄 바꿈 및 공백 유지
   width: fit-content; // 내용 길이에 따라 너비 조절
 `;
+
+// const ButtonMessageBubble = styled.div`
+//   display: flex;
+//   align-items: center;
+//   gap: 0.7rem;
+//   max-width: 50%;
+//   padding: 0.8rem 1.2rem;
+//   border-radius: 10px;
+//   background-color: #dfd9ff;
+//   color: ${({ theme }) => theme.colors.Gray0};
+//   ${({ theme }) => theme.fonts.Title6};
+//   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
+//   word-wrap: break-word; // 단어가 길 경우 줄 바꿈
+//   white-space: pre-wrap; // 줄 바꿈 및 공백 유지
+//   width: fit-content; // 내용 길이에 따라 너비 조절
+// `;
+
+// const MessageButton = styled.button`
+//   padding: 0.2rem 0.5rem;
+//   background-color: #fff;
+//   color: #5c3eff;
+//   ${({ theme }) => theme.fonts.Title7};
+//   border: none;
+//   border-radius: 5px;
+//   white-space: nowrap;
+//   cursor: pointer;
+
+//   &:hover {
+//     background-color: #a597f1;
+//     color: white;
+//   }
+// `;
 
 const OptionMessageBubble = styled.div`
   padding: 0.2rem 0.5rem;

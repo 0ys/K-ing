@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlaceSearchRequestDto {
+public class RagSearchRequestDto {
     private String type; // "drama", "cast" 등
     private String keywords; // "갯마을차차차"
 }
