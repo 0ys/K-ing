@@ -44,4 +44,20 @@ public class CurationController {
             @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(curationService.postCuration(requestDTO, imageFile)));
     }
+
+    @Operation(summary = "큐레이션 수정")
+    @PutMapping(value = "/{curationId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponse<CurationDetailResponseDTO>> putCuration(
+            @PathVariable(value = "curationId") Long curationId,
+            @RequestPart(value = "curation") CurationPostRequestDTO requestDTO,
+            @RequestPart(value = "imageFile", required = false) MultipartFile imageFile){
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(curationService.putCuration(curationId, requestDTO, imageFile)));
+    }
+
+    @Operation(summary = "큐레이션 삭제")
+    @DeleteMapping(value = "/{curationId}")
+    public ResponseEntity<ApiResponse<Void>> deleteCuration(@PathVariable(value = "curationId") Long curationId) {
+        curationService.deleteCuration(curationId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.success(null));
+    }
 }

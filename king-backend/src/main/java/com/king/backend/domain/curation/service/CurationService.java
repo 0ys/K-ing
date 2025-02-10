@@ -163,6 +163,11 @@ public class CurationService {
             Place place = placeRepository.findById(placeId)
                     .orElseThrow(() -> new CustomException(PlaceErrorCode.PLACE_NOT_FOUND));
 
+            curationListItemRepository.findByCurationListAndPlace(curation, place)
+                    .ifPresent((item) -> {
+                        throw new CustomException(CurationErrorCode.DUPLICATED_PLACE);
+                    });
+
             CurationListItem curationListItem = new CurationListItem();
             curationListItem.setCurationList(curation);
             curationListItem.setPlace(place);
@@ -178,5 +183,84 @@ public class CurationService {
                 .toList();
 
         return CurationDetailResponseDTO.fromEntity(curation, bookmarked, places);
+    }
+
+    @Transactional
+    public CurationDetailResponseDTO putCuration(Long curationId, CurationPostRequestDTO requestDTO, MultipartFile imageFile) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        OAuth2UserDTO authUser = (OAuth2UserDTO) authentication.getPrincipal();
+        Long userId = Long.parseLong(authUser.getName());
+        User user = userRepository.findByIdAndStatus(userId, "ROLE_REGISTERED")
+                .orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
+
+        CurationList curation = curationListRepository.findById(curationId)
+                .orElseThrow(() -> new CustomException(CurationErrorCode.CURATION_NOT_FOUND));
+
+        if (!curation.getWriter().equals(user)) {
+            throw new CustomException(CurationErrorCode.FORBIDDEN_CURATION);
+        }
+
+        if (!ValidationUtil.checkNotNullAndLengthLimit(requestDTO.getTitle(), 50)
+                || requestDTO.getDescription().length() > 1000
+                || requestDTO.getIsPublic() == null
+                || requestDTO.getPlaceIds().isEmpty()) {
+            throw new CustomException(CurationErrorCode.INVALID_VALUE);
+        }
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String imageUrl = s3Service.uploadFile(curation, imageFile);
+            curation.setImageUrl(imageUrl);
+        }
+        curation.setTitle(requestDTO.getTitle());
+        curation.setDescription(requestDTO.getDescription());
+        curation.setPublic(requestDTO.getIsPublic());
+
+        curationListRepository.save(curation);
+
+        curationListItemRepository.deleteAllByCurationList(curation);
+
+        for (Long placeId : requestDTO.getPlaceIds()) {
+            Place place = placeRepository.findById(placeId)
+                    .orElseThrow(() -> new CustomException(PlaceErrorCode.PLACE_NOT_FOUND));
+
+            curationListItemRepository.findByCurationListAndPlace(curation, place)
+                    .ifPresent((item) -> {
+                        throw new CustomException(CurationErrorCode.DUPLICATED_PLACE);
+                    });
+
+            CurationListItem curationListItem = new CurationListItem();
+            curationListItem.setCurationList(curation);
+            curationListItem.setPlace(place);
+
+            curationListItemRepository.save(curationListItem);
+        }
+
+        boolean bookmarked = curationListBookmarkRepository.existsByCurationListIdAndUserId(curation.getId(), userId);
+
+        List<Place> places = curationListItemRepository.findByCurationListId(curation.getId())
+                .stream()
+                .map(CurationListItem::getPlace)
+                .toList();
+
+        return CurationDetailResponseDTO.fromEntity(curation, bookmarked, places);
+    }
+
+    @Transactional
+    public void deleteCuration(Long curationId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        OAuth2UserDTO authUser = (OAuth2UserDTO) authentication.getPrincipal();
+        Long userId = Long.parseLong(authUser.getName());
+        User user = userRepository.findByIdAndStatus(userId, "ROLE_REGISTERED")
+                .orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
+
+        CurationList curation = curationListRepository.findById(curationId)
+                .orElseThrow(() -> new CustomException(CurationErrorCode.CURATION_NOT_FOUND));
+
+        if (!curation.getWriter().equals(user)) {
+            throw new CustomException(CurationErrorCode.FORBIDDEN_CURATION);
+        }
+
+        curationListItemRepository.deleteAllByCurationList(curation);
+        curationListRepository.delete(curation);
     }
 }
