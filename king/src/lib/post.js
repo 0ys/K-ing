@@ -103,3 +103,43 @@ export const updatePost = async (postId, postInfo, image) => {
     console.error(err);
   }
 };
+
+// 댓글 생성
+export const createComment = async (postId, content) => {
+  try {
+    const { data } = await client.post(`/post/${postId}/comment`, content);
+    return data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+//댓글 삭제
+export const deleteComment = async (postId, commentId) => {
+  try {
+    const { data } = await client.delete(`/post/${postId}/comment/${commentId}`);
+    return data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+// 좋아요
+export const likePost = async (postId) => {
+  try {
+    const { data } = await client.post(`/post/${postId}/like`);
+    return data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+// 좋아요 해제
+export const unLikePost = async (postId) => {
+  try {
+    const { data } = await client.delete(`/post/${postId}/like`);
+    return data;
+  } catch (err) {
+    console.error(err);
+  }
+};

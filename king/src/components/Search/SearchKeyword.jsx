@@ -24,7 +24,7 @@ const SearchKeyword = () => {
   const navigate = useNavigate();
 
   const [filter, setFilter] = useRecoilState(FilterOption);
-  const [sortBy, setSortBy] = useState('popularity');
+  const [sortBy, setSortBy] = useState('createdAt');
 
   const [isProvinceActive, setIsProvinceActive] = useState(false);
   const [isCategoryActive, setIsCategoryActive] = useState(false);

@@ -65,6 +65,8 @@ const TextContainer = styled.div`
   flex-direction: column;
   align-items: flex-start;
 
+  text-align: left;
+
   width: 100%;
 `;
 

@@ -6,7 +6,7 @@ import SortingModal from '../../components/common/SortingModal';
 
 const SortingRow = ({ onSortingChange }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [value, setValue] = useState('인기순');
+  const [value, setValue] = useState('최신순');
 
   const openModal = () => {
     setIsModalVisible(true);

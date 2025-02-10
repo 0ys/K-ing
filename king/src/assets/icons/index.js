@@ -18,6 +18,7 @@ export { ReactComponent as IcFilter } from './ic_filter.svg';
 export { ReactComponent as IcFootprintLeft } from './ic_footprint_left.svg';
 export { ReactComponent as IcFootprintRight } from './ic_footprint_right.svg';
 export { ReactComponent as IcFootsteps } from './ic_footsteps.svg';
+export { ReactComponent as IcHeartTrue } from './ic_heart_true.svg';
 export { ReactComponent as IcHome } from './ic_home.svg';
 export { ReactComponent as IcHomeSelected } from './ic_home_selected.svg';
 export { ReactComponent as IcImageUpload } from './ic_image_upload.svg';

@@ -1,6 +1,8 @@
 import { useSetRecoilState } from 'recoil';
 import { styled } from 'styled-components';
 
+import kingCharacter from '/src/assets/icons/king_character.png';
+
 import { deletePostDraft } from '../../../lib/post';
 import { UseDraft } from '../../../recoil/atom';
 import CancelButton from '../../common/button/CancelButton';
@@ -17,8 +19,7 @@ const DraftModal = ({ isShowing, handleCancel }) => {
 
   const handleCancelDraft = async () => {
     setUseDraft(false);
-    // await deletePostDraft();
-    console.log('deletePostDraft');
+    await deletePostDraft();
     handleCancel();
   };
 
@@ -27,7 +28,7 @@ const DraftModal = ({ isShowing, handleCancel }) => {
       <SmallModal title="임시저장 불러오기" isShowing={isShowing}>
         <StDraftModalWrapper>
           <StCommentWrapper>
-            <img src="/src/assets/icons/king_character.png" />
+            <img src={kingCharacter} />
             <p>
               임시저장된 컨텐츠를 <br />
               불러오시겠습니까?

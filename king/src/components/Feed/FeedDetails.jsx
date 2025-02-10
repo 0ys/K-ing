@@ -1,29 +1,61 @@
 import React, { useEffect, useState } from 'react';
+import { useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
+import SendIcon from '/src/assets/icons/chat-send.png';
 import OptionIcon from '/src/assets/icons/option.png';
 
-import { IcComments, IcLikes } from '../../assets/icons';
+import { IcComments, IcHeartTrue, IcLikes } from '../../assets/icons';
 import useModal from '../../hooks/common/useModal';
-import { deletePost, getPostDetail } from '../../lib/post';
+import useToggle from '../../hooks/common/useToggle';
+import useGetComments from '../../hooks/post/useGetComments';
+import { createComment, deletePost, getPostDetail, likePost, unLikePost } from '../../lib/post';
+import { catchLastScrollItem } from '../../util/catchLastScrollItem';
 import { getRelativeDate } from '../../util/getRelativeDate';
 import { getUserIdFromToken } from '../../util/getUserIdFromToken';
+import { getUserInfoById } from '../../util/getUserInfoById';
 import BackButton from '../common/button/BackButton';
 import OptionModal from '../common/OptionModal';
 import Loading from '../Loading/Loading';
 import Comment from './Comment';
+
 const FeedDetails = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const update = useModal();
+  const lastElementRef = useRef(null);
+  const toggle = useToggle();
 
   const userId = getUserIdFromToken();
+  const [userInfo, setUserInfo] = useState(null);
 
   const [postInfo, setPostInfo] = useState(null);
   const [writer, setWriter] = useState(null);
   const [isOriginLan, setIsOriginLan] = useState(true);
+  const [commentList, setCommentList] = useState(null);
+  const [newComment, setNewComment] = useState('');
+
+  const { reactionList, getNextData, isLoading, hasMore, mutate } = useGetComments(postId);
+
+  //userInfo
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const userInfo = await getUserInfoById(userId);
+      setUserInfo(userInfo);
+    };
+
+    getUserInfo();
+  }, [userId]);
+
+  useEffect(() => {
+    if (reactionList && reactionList.comments) {
+      setCommentList(reactionList.comments);
+      toggle.setToggle(reactionList.liked);
+    }
+    catchLastScrollItem(isLoading, lastElementRef, getNextData, hasMore);
+  }, [isLoading, hasMore, lastElementRef]);
 
   const handleGoBack = () => {
     //이전 경로 구하기
@@ -45,6 +77,60 @@ const FeedDetails = () => {
   useEffect(() => {
     getPostInfo();
   }, [postId]);
+
+  const handleLikePost = async () => {
+    toggle.handleToggle();
+
+    if (!toggle.toggle) {
+      //좋아요 요청
+      const res = await likePost(postId);
+      if (res.success) {
+        mutate((pages) => {
+          if (!pages) return [];
+
+          const updatedPages = pages.map((page) => ({
+            ...page,
+            data: {
+              ...page.data,
+              liked: true,
+              likesCount: page.data.likesCount + 1,
+            },
+          }));
+          return updatedPages;
+        }, false);
+      }
+    } else {
+      const res = await unLikePost(postId);
+      if (res.success) {
+        mutate((pages) => {
+          if (!pages) return [];
+
+          const updatedPages = pages.map((page) => ({
+            ...page,
+            data: {
+              ...page.data,
+              liked: false,
+              likesCount: page.data.likesCount - 1,
+            },
+          }));
+          return updatedPages;
+        }, false);
+      }
+    }
+  };
+
+  const handleCommentChange = (e) => {
+    setNewComment(e.target.value);
+  };
+
+  const handleCommentSubmit = async () => {
+    const res = await createComment(postId, newComment);
+    setNewComment('');
+    if (res.success) {
+      alert('댓글이 등록되었습니다.');
+      mutate();
+    }
+  };
 
   const handleUpdate = () => {
     navigate(`/update/post/${postId}`);
@@ -71,6 +157,8 @@ const FeedDetails = () => {
     );
   }
 
+  if (isLoading && reactionList && reactionList.comments) return <Loading />;
+
   return (
     <>
       <PostContainer>
@@ -90,7 +178,7 @@ const FeedDetails = () => {
           )}
         </Header>
         <UserInfo>
-          <Profile src={writer.imageUrl} alt="default" />
+          <Profile style={{ backgroundImage: `url(${writer.imageUrl})` }} alt="default" />
           <UserName>{writer.nickname}</UserName>
         </UserInfo>
 
@@ -101,11 +189,16 @@ const FeedDetails = () => {
 
         <PostCount>
           <LikeCount>
-            <IcLikes />
-            74
+            {toggle.toggle ? (
+              <IcHeartTrue onClick={handleLikePost} />
+            ) : (
+              <IcLikes onClick={handleLikePost} />
+            )}
+            {reactionList && reactionList.likesCount}
           </LikeCount>
           <CommentCount>
-            <IcComments />5
+            <IcComments />
+            {reactionList && reactionList.commentsCount}
           </CommentCount>
         </PostCount>
 
@@ -113,7 +206,28 @@ const FeedDetails = () => {
 
         <CommentWrapper>
           Comments
-          <Comment />
+          <CommentContainer>
+            {commentList &&
+              commentList.map((comment, index) => (
+                <Comment
+                  key={comment.commentId}
+                  data={comment}
+                  ref={index === commentList?.length - 1 ? lastElementRef : null}
+                />
+              ))}
+          </CommentContainer>
+          <NewCommentContainer>
+            <Profile style={{ backgroundImage: `url(${writer.imageUrl})` }} alt="profile" />
+            <CommentInput
+              type="text"
+              placeholder={`${writer.nickname}님에게 댓글 추가..`}
+              value={newComment}
+              onChange={handleCommentChange}
+            />
+            <SendButton onClick={handleCommentSubmit}>
+              <img src={SendIcon} alt="sendBtn" />
+            </SendButton>
+          </NewCommentContainer>
         </CommentWrapper>
         <FooterWrapper>
           <PostDate>{getRelativeDate(postInfo.createdAt)}</PostDate>·
@@ -204,14 +318,17 @@ const UserInfo = styled.div`
   gap: 1rem;
 `;
 
-const Profile = styled.img`
+const Profile = styled.div`
   width: 3rem;
-  height: 100%;
+  height: 3rem;
+  border-radius: 50%;
+  overflow: hidden;
+
+  background-size: cover;
+  background-position: center;
 `;
 
 const UserName = styled.span`
-  width: 100%;
-
   ${({ theme }) => theme.fonts.Title5};
   color: ${({ theme }) => theme.colors.Gray0};
 `;
@@ -278,10 +395,62 @@ const PostCaption = styled.div`
 `;
 
 const CommentWrapper = styled.div`
+  position: relative;
+  height: 18rem;
+
   width: 100%;
 
   ${({ theme }) => theme.fonts.Title5};
   color: ${({ theme }) => theme.colors.Gray1};
+`;
+
+const CommentContainer = styled.div`
+  height: 11rem;
+
+  overflow-y: auto;
+`;
+
+const NewCommentContainer = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+
+  width: 100%;
+  margin-top: 1rem;
+`;
+
+const CommentInput = styled.input`
+  height: 2rem;
+  flex-grow: 1;
+  padding: 0.5rem 1rem;
+
+  border: 1px solid ${({ theme }) => theme.colors.Gray2};
+  border-radius: 1rem;
+  outline: none;
+`;
+
+const SendButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 2rem;
+  padding: 1.5rem;
+
+  border-radius: 1rem;
+  cursor: pointer;
+
+  background-color: ${({ theme }) => theme.colors.MainBlue};
+
+  img {
+    width: 1.5rem;
+  }
 `;
 
 const FooterWrapper = styled.div`

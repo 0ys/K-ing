@@ -91,7 +91,7 @@ const PostUpload = ({ state }) => {
       if (placeId !== 0) {
         draftInfo.placeId = placeId;
       }
-      console.log(draftInfo);
+
       const res = await postDraft(draftInfo, imageFile);
       if (res.success) {
         alert('임시저장이 완료되었습니다.');
@@ -160,7 +160,6 @@ const PostUpload = ({ state }) => {
     const file = event.target.files[0];
 
     if (!file) return;
-    console.log(file);
     if (file.size > 5 * 1024 * 1024) {
       //5MB
       alert('업로드 가능한 최대 용량은 5MB입니다. ');
@@ -177,15 +176,11 @@ const PostUpload = ({ state }) => {
           toType: 'image/jpeg',
         });
 
-        console.log(convertedBlob);
-
         const newFilename = file.name.replace(/\.(heic|heif)$/i, '.jpg'); // Regex to replace both .heic and .heif
         const newFile = new File([convertedBlob], newFilename, {
           type: 'image/jpeg',
           lastModified: new Date().getTime(),
         });
-
-        console.log(newFile);
 
         setImageFile(newFile);
         setImage(URL.createObjectURL(newFile));
@@ -341,8 +336,9 @@ const ImageUploadWrapper = styled.div`
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: rgba(0, 0, 0, 0.9);
+      background-color: rgba(0, 0, 0, 0.5);
       border-radius: 1rem;
+      z-index:1000;
     }
   `}
   h3 {

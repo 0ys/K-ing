@@ -1,27 +1,47 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { IcDelete } from '../../assets/icons';
+import { deleteComment } from '../../lib/post';
+import { getRelativeCommentDate } from '../../util/getRelativeCommentDate';
+import { getUserIdFromToken } from '../../util/getUserIdFromToken';
 
-const Comment = () => {
+const Comment = forwardRef(({ data }, ref) => {
+  const { postId } = useParams();
+  const nowUserId = getUserIdFromToken();
+
+  const {
+    commentId,
+    content,
+    createdAt,
+    writer: { userId, nickname, imageUrl },
+  } = data;
+
+  const handleDeleteComment = async () => {
+    const res = await deleteComment(postId, commentId);
+    if (res.success) {
+      alert('댓글이 삭제되었습니다');
+    }
+  };
+
   return (
-    <CommentWrapper>
+    <CommentWrapper ref={ref}>
       <UserInfo>
         <UserProfile>
-          <Profile src="/src/assets/icons/king_logo.png" alt="default" />
-          <p>babo_is_back</p>
+          <Profile style={{ backgroundImage: `url(${imageUrl})` }} alt="profile" />
+          <p>{nickname}</p>
         </UserProfile>
-        <DateWrapper>14h</DateWrapper>
+        <DateWrapper>{getRelativeCommentDate(createdAt)}</DateWrapper>
       </UserInfo>
 
       <Caption>
-        <p>우와 멋져요~~</p>
-        <IcDelete />
+        <p>{content}</p>
+        {String(userId) === nowUserId && <IcDelete onClick={handleDeleteComment} />}
       </Caption>
-      <hr />
     </CommentWrapper>
   );
-};
+});
 
 export default Comment;
 
@@ -30,11 +50,11 @@ const CommentWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: start;
-
-  gap: 0.5rem;
+  margin-top: 1rem;
 
   width: 100%;
 `;
+
 const UserInfo = styled.div`
   display: flex;
   flex-direction: row;
@@ -43,6 +63,7 @@ const UserInfo = styled.div`
 
   gap: 1rem;
 `;
+
 const UserProfile = styled.div`
   display: flex;
   flex-direction: row;
@@ -58,13 +79,24 @@ const UserProfile = styled.div`
     color: ${({ theme }) => theme.colors.Gray1};
   }
 `;
-const Profile = styled.img`
+
+const Profile = styled.div`
   width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  overflow: hidden;
+
+  background-size: cover;
+  background-position: center;
 `;
+
 const DateWrapper = styled.div`
+  width: 100%;
+
   ${({ theme }) => theme.fonts.Body6};
   color: ${({ theme }) => theme.colors.Gray2};
 `;
+
 const Caption = styled.div`
   display: flex;
   flex-direction: row;
