@@ -6,7 +6,11 @@ import com.king.backend.domain.cast.entity.CastTranslation;
 import com.king.backend.domain.cast.errorcode.CastErrorCode;
 import com.king.backend.domain.cast.repository.CastRepository;
 import com.king.backend.domain.content.entity.ContentCast;
+import com.king.backend.domain.favorite.repository.FavoriteRepository;
 import com.king.backend.domain.user.dto.domain.OAuth2UserDTO;
+import com.king.backend.domain.user.entity.User;
+import com.king.backend.domain.user.errorcode.UserErrorCode;
+import com.king.backend.domain.user.repository.UserRepository;
 import com.king.backend.global.exception.CustomException;
 import com.king.backend.s3.service.S3Service;
 import jakarta.transaction.Transactional;
@@ -25,12 +29,17 @@ import java.util.List;
 public class CastService {
     private final CastRepository castRepository;
     private final S3Service s3Service;
+    private final FavoriteRepository favoriteRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public CastDetailResponseDto getCastDetail(Long id){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        OAuth2UserDTO user = (OAuth2UserDTO) authentication.getPrincipal();
-        String language = user.getLanguage();
+        OAuth2UserDTO oauthUser = (OAuth2UserDTO) authentication.getPrincipal();
+        Long userId = Long.parseLong(oauthUser.getName());
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
+        String language = oauthUser.getLanguage();
         log.info("user language : {}", language);
 
         Cast cast = castRepository.findById(id).orElseThrow(() -> new CustomException(CastErrorCode.CAST_NOT_FOUND));
@@ -60,7 +69,7 @@ public class CastService {
                         contentId,
                         title,
                         contentImageUrl,
-                        true
+                        favoriteRepository.existsByUserAndTypeAndTargetId(user, "content", contentId)
                 ));
                 works.add(new CastDetailResponseDto.Work(contentId, year, title));
             }
@@ -70,15 +79,16 @@ public class CastService {
         String rawBirthPlace = castTrans.getBirthPlace();
         String parsedBirthPlace = parseBirthPlace(rawBirthPlace);
 
+        Long castId = cast.getId();
         return new CastDetailResponseDto(
-                cast.getId(),
+                castId,
                 castTrans.getName(),
                 imageUrl,
                 cast.getBirthDate(),
                 parsedBirthPlace,
                 cast.getParticipatingWork(),
                 cast.getCreatedAt(),
-                true,
+                favoriteRepository.existsByUserAndTypeAndTargetId(user, "cast", castId),
                 relatedContents,
                 works
         );

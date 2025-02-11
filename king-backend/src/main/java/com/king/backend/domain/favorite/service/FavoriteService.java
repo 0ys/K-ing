@@ -96,25 +96,28 @@ public class FavoriteService {
 
         List<FavoriteResponseDto.Favorite> favoriteDtos = new ArrayList<>();
         for (Favorite fav : favorites) {
-            FavoriteResponseDto.Favorite dto = FavoriteResponseDto.Favorite.builder().build();
-            dto.setFavoriteId(fav.getId());
-            dto.setType(fav.getType());
+            FavoriteResponseDto.Favorite.FavoriteBuilder builder =
+                    FavoriteResponseDto.Favorite.builder()
+                            .favoriteId(fav.getId())
+                            .type(fav.getType())
+                            .targetId(fav.getTargetId());
 
             if ("cast".equalsIgnoreCase(type)) {
                 Cast cast = castRepository.findById(fav.getTargetId())
                         .orElseThrow(() -> new CustomException(CastErrorCode.CAST_NOT_FOUND));
                 CastTranslation castTrans = cast.getTranslation(language);
-                dto.setTitle(castTrans.getName());
-                dto.setImageUrl(cast.getImageUrl());
+                builder.title(castTrans.getName())
+                        .imageUrl(cast.getImageUrl());
             } else if ("content".equalsIgnoreCase(type)) {
                 Content content = contentRepository.findById(fav.getTargetId())
                         .orElseThrow(() -> new CustomException(ContentErrorCode.CONTENT_NOT_FOUND));
                 ContentTranslation contentTrans = content.getTranslation(language);
-                dto.setTitle(contentTrans.getTitle());
-                dto.setImageUrl(content.getImageUrl());
+                builder.title(contentTrans.getTitle())
+                        .imageUrl(content.getImageUrl());
             } else {
                 throw new CustomException(FavoriteErrorCode.INVALID_FAVORITE_TYPE);
             }
+            FavoriteResponseDto.Favorite dto = builder.build();
             favoriteDtos.add(dto);
         }
 

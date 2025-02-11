@@ -23,6 +23,7 @@ public class FavoriteResponseDto {
     public static class Favorite {
         private Long favoriteId;
         private String type;
+        private Long targetId;
         private String title;
         private String imageUrl;
         private OffsetDateTime createdAt;
