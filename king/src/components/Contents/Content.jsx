@@ -43,7 +43,7 @@ const Content = () => {
 
   useEffect(() => {
     if (!isLoading && initialLoading) {
-      document.querySelector('html').scrollTo({ top: scrollPosition, behavior: 'smooth' });
+      window.scrollTo({ top: scrollPosition, behavior: 'smooth' });
       setInitialLoading(false);
     }
   }, [isLoading]);
@@ -54,11 +54,11 @@ const Content = () => {
 
   const handleSearch = (searchQuery) => {
     setSearchQuery(searchQuery);
-    document.querySelector('html').scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleItemClick = (id) => {
-    setScrollPosition(document.body.scrollTop || document.documentElement.scrollTop);
+    setScrollPosition(window.scrollY);
 
     if (contentType === 'cast') {
       navigate(`/content/cast/${id}`);
