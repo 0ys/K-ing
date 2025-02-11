@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { IcComments, IcLikes } from '../../assets/icons';
+import { IcComments, IcHeartTrue, IcLikes } from '../../assets/icons';
 import { formatDate } from '../../util/formatDate';
 
 const PostItem = forwardRef(({ post, column }, ref) => {
@@ -20,7 +20,7 @@ const PostItem = forwardRef(({ post, column }, ref) => {
       <St.Info>
         <St.Action>
           <IconText>
-            <IcLikes />
+            {post.liked ? <IcHeartTrue /> : <IcLikes />}
             <p>{post.likesCnt}</p>
           </IconText>
           <IconText>

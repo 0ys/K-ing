@@ -1,9 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import SearchItem from './SearchItem';
 
 const SearchList = ({ title, data, type }) => {
+  const navigate = useNavigate();
   const unit = title === '인물' ? '명' : '개';
 
   return (
@@ -13,9 +15,14 @@ const SearchList = ({ title, data, type }) => {
           <St.Title>{title}</St.Title>
           <St.Count>
             {data.length}
+            {data.length == 10 && '+'}
             {unit}의 {title}
           </St.Count>
         </St.Left>
+        <span onClick={() => navigate(`/search/detail/${type.toLowerCase()}`)}>
+          {' '}
+          전체보기 {'>'}{' '}
+        </span>
       </St.Header>
       <St.List>
         {data.length > 0 ? (
@@ -43,7 +50,7 @@ const St = {
     width: 100%;
 
     box-sizing: border-box;
-    padding: 0 0.5rem;
+    padding: 0.5rem;
   `,
   Header: styled.div`
     display: flex;

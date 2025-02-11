@@ -8,8 +8,8 @@ const useGetComments = (postId) => {
     if (previousPageData && !previousPageData.data.nextCursor) return null; // 마지막 페이지
 
     return pageIndex === 0
-      ? `/post/${postId}/comment?size=3`
-      : `/post/${postId}/comment?size=3&cursor=${previousPageData.data.nextCursor}`;
+      ? `/post/${postId}/comment?size=5`
+      : `/post/${postId}/comment?size=5&cursor=${previousPageData.data.nextCursor}`;
   };
 
   const { data, error, size, setSize, isValidating, mutate } = useSWRInfinite(
@@ -23,12 +23,14 @@ const useGetComments = (postId) => {
   }, [postId, mutate, setSize]);
 
   const results = data ? [].concat(...data.map((res) => res.data)) : [];
+  const commentList = data ? [].concat(...data.map((res) => res.data.comments)) : [];
   const isEmpty = data?.[0]?.data?.comments?.length === 0;
-  const isReachingEnd = isEmpty || (data && data[data.length - 1]?.data?.comments?.length < 3);
+  const isReachingEnd = isEmpty || (data && data[data.length - 1]?.data?.comments?.length < 5);
   const hasMore = !isEmpty && !isReachingEnd;
 
   return {
     reactionList: results[0],
+    commentList,
     getNextData: () => {
       if (!isValidating) {
         setSize(size + 1);

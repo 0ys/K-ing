@@ -127,7 +127,7 @@ const SearchKeyword = () => {
             <BackButton onBack={handleGoBack} />
             <h3> 장소 조회</h3>
           </IconText>
-          <SearchBar query={searchQuery || ''} onSearch={handleSearch} />
+          <SearchBar type="PLACE" query={searchQuery || ''} onSearch={handleSearch} />
           <OptionHeader>
             <FilterWrapper>
               <FilterButton

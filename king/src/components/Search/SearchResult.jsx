@@ -16,10 +16,10 @@ const SearchResult = () => {
   const [searchQuery, setSearchQuery] = useRecoilState(SearchQueryState);
   const [searchCategory, setSearchCategory] = useRecoilState(SearchCategoryState);
 
-  const { searchResultList, getNextData, isLoading, isError } = useGetSearchResult(
+  const { searchResultList, isLoading } = useGetSearchResult(
     searchQuery,
     searchCategory,
-    '',
+    'createdAt',
   );
 
   const [contentList, setContentList] = useState([]);
@@ -37,20 +37,6 @@ const SearchResult = () => {
   const handleGoBack = () => {
     navigate(`/home`);
   };
-
-  useEffect(() => {
-    const onScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight
-      ) {
-        getNextData();
-      }
-    };
-
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [getNextData]);
 
   useEffect(() => {
     if (searchResultList) {
@@ -95,10 +81,16 @@ const StHomeWrapper = styled.div`
   text-align: center;
   margin-bottom: 7rem;
   padding: 2rem;
+  padding-top: 0;
 `;
 
 const Header = styled.div`
   width: 100%;
+  position: sticky;
+  top: 0;
+
+  padding-top: 2rem;
+  background-color: ${({ theme }) => theme.colors.White};
 `;
 
 const IconText = styled.div`
@@ -119,4 +111,5 @@ const IconText = styled.div`
 const ResultWrapper = styled.div`
   width: 100%;
   margin-top: 1rem;
+  margin-bottom: 5rem;
 `;

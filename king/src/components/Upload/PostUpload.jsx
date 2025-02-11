@@ -160,6 +160,18 @@ const PostUpload = ({ state }) => {
     const file = event.target.files[0];
 
     if (!file) return;
+
+    // if (
+    //   file.name.endsWith('.jpg') ||
+    //   file.name.endsWith('.png') ||
+    //   file.name.endsWith('.heic')
+    // ) {
+    //   alert('지원하지 않는 이미지 형식입니다.');
+    //   event.target.type = '';
+    //   event.target.type = 'file';
+    //   return;
+    // }
+
     if (file.size > 5 * 1024 * 1024) {
       //5MB
       alert('업로드 가능한 최대 용량은 5MB입니다. ');
@@ -209,6 +221,7 @@ const PostUpload = ({ state }) => {
         </IconText>
 
         <ImageUploadWrapper
+          onClick={triggerFileInput}
           $isImage={image ? true : false}
           style={{ backgroundImage: `url(${image})` }}
         >
@@ -219,11 +232,7 @@ const PostUpload = ({ state }) => {
             style={{ display: 'none' }}
             ref={fileInputRef}
           />
-          {image ? (
-            <IcImageUploadTrue onClick={triggerFileInput} />
-          ) : (
-            <IcImageUpload onClick={triggerFileInput} />
-          )}
+          {image ? <IcImageUploadTrue /> : <IcImageUpload />}
           {image ? <h3>사진 재업로드하기</h3> : <h3>사진 업로드하기</h3>}
           <p>PNG, JPG 형식만 지원됩니다.</p>
         </ImageUploadWrapper>
@@ -320,14 +329,15 @@ const ImageUploadWrapper = styled.div`
   position: relative;
 
   background-color: ${({ theme }) => theme.colors.Gray5};
+  background-image: ${({ $imageUrl }) => ($imageUrl ? `url(${$imageUrl})` : 'none')};
   background-size: cover;
   background-position: center;
   border-radius: 1rem;
 
   cursor: pointer;
 
-  ${({ isImage }) =>
-    isImage &&
+  ${({ $isImage }) =>
+    $isImage &&
     `
     &:after {
       content: "";
@@ -336,22 +346,29 @@ const ImageUploadWrapper = styled.div`
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: rgba(0, 0, 0, 0.4);
       border-radius: 1rem;
-      z-index:1000;
+      z-index: 2;
     }
   `}
+
+  svg {
+    z-index: 3;
+  }
+
   h3 {
     z-index: 1;
 
     color: ${({ theme, $isImage }) => ($isImage ? theme.colors.White : theme.colors.Gray0)};
     ${({ theme }) => theme.fonts.Title4};
+    z-index: 3;
   }
 
   p {
     z-index: 1;
     color: ${({ theme, $isImage }) => ($isImage ? theme.colors.White : '#464656')};
     ${({ theme }) => theme.fonts.Body4};
+    z-index: 3;
   }
 `;
 
@@ -422,7 +439,6 @@ const TemporaryButton = styled.button`
   border: 1px solid ${({ theme }) => theme.colors.Gray1};
   border-radius: 1rem;
 
-  width: 100%;
   padding: 1rem 2rem;
 
   color: ${({ theme }) => theme.colors.Gray1};
@@ -430,18 +446,17 @@ const TemporaryButton = styled.button`
 `;
 
 const SaveButton = styled.button`
+  border-radius: 1rem;
+  padding: 1rem 2rem;
+
+  height: 100%;
+
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+
+  ${({ theme }) => theme.fonts.Body2};
   background-color: ${({ theme, disabled }) =>
     disabled ? theme.colors.Gray5 : theme.colors.MainBlue};
   color: ${({ theme, disabled }) => (disabled ? theme.colors.Gray2 : theme.colors.White)};
-  border-radius: 1rem;
-  padding: 1rem 2rem;
-  width: 100%;
-  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-
-  &:hover {
-    background-color: ${({ theme, disabled }) =>
-      disabled ? theme.colors.Gray5 : theme.colors.LightBlue};
-  }
 `;
 
 const StUploadModalWrapper = styled.div`

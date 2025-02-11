@@ -1,11 +1,12 @@
 import React from 'react';
+import { forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { ContentType } from '../../recoil/atom';
 
-const SearchItem = ({ item }) => {
+const SearchItem = forwardRef(({ item }, ref) => {
   const { id, category, name, imageUrl } = item;
   const setContentType = useSetRecoilState(ContentType);
 
@@ -24,14 +25,14 @@ const SearchItem = ({ item }) => {
   };
 
   return (
-    <St.Item onClick={handleClick}>
+    <St.Item onClick={handleClick} ref={ref}>
       <ImageWrapper>
         <Image src={imageUrl} alt={name} $defaultImage={imageUrl.includes('default.jpg')} />
       </ImageWrapper>
       <Text>{name}</Text>
     </St.Item>
   );
-};
+});
 
 export default SearchItem;
 
@@ -68,7 +69,16 @@ const Image = styled.img`
 `;
 
 const Text = styled.span`
-  flex: 2;
+  flex: 1.5;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2em;
+  max-height: 2.4em;
+  white-space: normal;
 
   ${({ theme }) => theme.fonts.Body6};
   color: ${({ theme }) => theme.colors.Gray0};

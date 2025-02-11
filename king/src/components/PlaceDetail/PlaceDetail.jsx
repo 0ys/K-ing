@@ -54,7 +54,7 @@ const PlaceDetail = () => {
         ))}
 
         {/* 길찾기, 공유 버튼 */}
-        <FunctionButton dest={placeData.name} />
+        <FunctionButton dest={placeData} />
 
         {/* 장소 상세 정보 */}
         <PlaceInfo placeData={placeData} />

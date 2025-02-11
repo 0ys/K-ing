@@ -176,7 +176,7 @@ const Card = styled.div`
   gap: 0.5rem;
 
   width: 100%;
-  height: 15rem;
+  height: 17rem;
   background-color: ${({ theme }) => theme.colors.White};
 
   #favor {

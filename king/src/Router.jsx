@@ -26,6 +26,7 @@ import PlaceDetailPage from './pages/PlaceDetailPage';
 import PostUpdatePage from './pages/PostUpdatePage';
 import PostUploadPage from './pages/PostUploadPage';
 import ReviewFeedPage from './pages/ReviewFeedPage';
+import SearchDeatilPage from './pages/ReviewFeedPage';
 import SearchFilterPage from './pages/SearchFilterPage';
 import SearchKeywordpage from './pages/SearchKeywordPage';
 import SearchResultPage from './pages/SearchResultPage';
@@ -73,6 +74,7 @@ const Router = () => {
               <Route path="/search/keyword/filter" element={<SearchFilterPage />} />
               {/* 통합검색시 */}
               <Route path="/search/result" element={<SearchResultPage />} />
+              <Route path="/search/detail/:type" element={<SearchDeatilPage />} />
               <Route path="/map" element={<MapPage />} />
               <Route path="/place/:placeId" element={<PlaceDetailPage />} />
               <Route path="/reviewfeed/:placeId" element={<ReviewFeedPage />} />

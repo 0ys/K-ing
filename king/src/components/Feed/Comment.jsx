@@ -110,4 +110,8 @@ const Caption = styled.div`
     ${({ theme }) => theme.fonts.Body4};
     color: ${({ theme }) => theme.colors.Gray1};
   }
+
+  svg {
+    cursor: pointer;
+  }
 `;
