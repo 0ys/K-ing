@@ -160,12 +160,20 @@ public class SyncService implements CommandLineRunner {
                 .build());
         properties.put("title", new Property.Builder()
                 .text(new TextProperty.Builder()
-                        .analyzer("standard")
+                        .analyzer(ElasticsearchConstants.ANALYZER_AUTOCOMPLETE)
+                        .searchAnalyzer("standard")
                         .fields(Map.of(
                                 "keyword", new Property.Builder()
                                         .keyword(new KeywordProperty.Builder().build())
                                         .build()
                         ))
+                        .build())
+                .build());
+
+        properties.put("description", new Property.Builder()
+                .text(new TextProperty.Builder()
+                        .analyzer(ElasticsearchConstants.ANALYZER_AUTOCOMPLETE)
+                        .searchAnalyzer("standard")
                         .build())
                 .build());
         properties.put("writerNickname", new Property.Builder()
@@ -183,7 +191,33 @@ public class SyncService implements CommandLineRunner {
                         .build())
                 .build());
 
-        elasticsearchUtil.createIndex(ElasticsearchConstants.CURATION_INDEX, properties);
+        TokenFilterDefinition autocompleteFilterDefinition = TokenFilterDefinition.of(tf -> tf
+                .ngram(ng -> ng
+                        .minGram(1)
+                        .maxGram(20)
+                )
+        );
+
+        TokenFilter tokenFilter=TokenFilter.of(tf -> tf
+                .definition(autocompleteFilterDefinition));
+
+        Map<String, TokenFilter> tokenFiltersMap = new HashMap<>();
+        tokenFiltersMap.put(ElasticsearchConstants.TOKEN_FILTER_AUTOCOMPLETE, tokenFilter);
+
+        IndexSettings settings = new IndexSettings.Builder()
+                .analysis(analysis -> analysis
+                        .analyzer(ElasticsearchConstants.ANALYZER_AUTOCOMPLETE, a -> a
+                                .custom(ca -> ca
+                                        .tokenizer("standard")
+                                        .filter("lowercase", ElasticsearchConstants.TOKEN_FILTER_AUTOCOMPLETE)
+                                )
+                        )
+                        .filter(tokenFiltersMap)
+                )
+                .maxNgramDiff(20)
+                .build();
+
+        elasticsearchUtil.createIndex(ElasticsearchConstants.CURATION_INDEX, properties,settings);
 
         migrateCurationLists();
     }
@@ -196,6 +230,7 @@ public class SyncService implements CommandLineRunner {
                     return new CurationDocument(
                             "CURATION-" + curation.getId(),
                             curation.getTitle(),
+                            curation.getDescription(),
                             writerNickname,
                             curation.getImageUrl(),
                             curation.getId(),
@@ -216,6 +251,7 @@ public class SyncService implements CommandLineRunner {
         CurationDocument doc = new CurationDocument(
                 "CURATION-" + curationList.getId(),
                 curationList.getTitle(),
+                curationList.getDescription(),
                 "@"+curationList.getWriter().getNickname(),
                 curationList.getImageUrl(),
                 curationList.getId(),

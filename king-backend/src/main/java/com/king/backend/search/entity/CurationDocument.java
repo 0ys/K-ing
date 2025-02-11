@@ -30,6 +30,11 @@ public class CurationDocument {
     private String title;
 
     /**
+     * 큐레이션 설명
+     */
+    private String description;
+
+    /**
      * 작성자 닉네임 (예, "@홍길동")
      */
     private String writerNickname;

@@ -7,6 +7,7 @@ import com.king.backend.ai.dto.CurationSearchResponseDto;
 import com.king.backend.ai.dto.PlaceSearchResponseDto;
 import com.king.backend.ai.dto.RagSearchRequestDto;
 import com.king.backend.search.config.ElasticsearchConstants;
+import com.king.backend.search.entity.CurationDocument;
 import com.king.backend.search.entity.SearchDocument;
 import org.springframework.stereotype.Service;
 
@@ -134,6 +135,44 @@ public class RagSearchService {
     }
 
     public CurationSearchResponseDto searchCurations(RagSearchRequestDto requestDto) {
-        return null;
+        try {
+            // ES 검색 쿼리 구성 – title과 description 필드를 대상으로 검색
+            SearchRequest searchRequest = SearchRequest.of(s -> s
+                    .index(ElasticsearchConstants.CURATION_INDEX)
+                    .query(q -> q.bool(b -> b
+                            .should(sh -> sh.match(m -> m
+                                    .field("title")
+                                    .query(requestDto.getKeywords())
+                            ))
+                            .should(sh -> sh.match(m -> m
+                                    .field("description")
+                                    .query(requestDto.getKeywords())
+                            ))
+                            // should 절 중 최소 1개 이상 매치
+                            .minimumShouldMatch("1")
+                    ))
+            );
+
+            SearchResponse<CurationDocument> searchResponse =
+                    elasticsearchClient.search(searchRequest, CurationDocument.class);
+
+            // 검색 결과를 CurationResult 리스트로 매핑
+            List<CurationSearchResponseDto.CurationResult> results = searchResponse.hits().hits().stream()
+                    .map(hit -> {
+                        CurationDocument doc = hit.source();
+                        CurationSearchResponseDto.CurationResult result = new CurationSearchResponseDto.CurationResult();
+                        result.setCurationId(doc.getOriginalId());
+                        result.setTitle(doc.getTitle());
+                        result.setDescription(doc.getDescription());
+                        return result;
+                    })
+                    .collect(Collectors.toList());
+
+            return new CurationSearchResponseDto(results);
+        } catch (IOException e) {
+            throw new RuntimeException("Elasticsearch 큐레이션 검색 실패", e);
+        }
     }
-}
+
+    }
+
