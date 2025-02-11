@@ -1,32 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { deleteAccount, logout } from '../../lib/auth';
+import { logout } from '../../lib/auth';
+import { getLanguage, getTranslations } from '../../util/languageUtils';
 
 const AccountActions = () => {
   const navigate = useNavigate();
+  const [language, setLanguage] = useState(getLanguage());
+  const { account: accountTranslations } = getTranslations(language);
 
-  // 🔹 로그아웃 처리
+  // 언어 변경 감지하여 업데이트
+  useEffect(() => {
+    const handleLanguageChange = () => setLanguage(getLanguage());
+    window.addEventListener('languageChange', handleLanguageChange);
+    return () => window.removeEventListener('languageChange', handleLanguageChange);
+  }, []);
+
+  // 로그아웃 처리
   const handleLogout = async () => {
     const success = await logout();
     if (success) {
       localStorage.removeItem('accessToken');
       window.location.replace('/');
     } else {
-      alert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+      alert(accountTranslations.logoutError);
     }
   };
 
-  // 🔹 회원 탈퇴 처리
+  // 회원 탈퇴 처리
   const handleDeleteAccount = async () => {
     navigate('/setting/delete-account');
   };
 
   return (
     <StActionsWrapper>
-      <StLogoutButton onClick={handleLogout}>로그아웃</StLogoutButton>
-      <StDeleteAccountButton onClick={handleDeleteAccount}>회원 탈퇴</StDeleteAccountButton>
+      <StLogoutButton onClick={handleLogout}>{accountTranslations.logout}</StLogoutButton>
+      <StDeleteAccountButton onClick={handleDeleteAccount}>
+        {accountTranslations.deleteAccount}
+      </StDeleteAccountButton>
     </StActionsWrapper>
   );
 };
@@ -38,9 +50,8 @@ const StActionsWrapper = styled.div`
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  padding: 2.5rem;
-  margin-top: auto; /* ✅ 하단에 고정 */
-  color: ${({ theme }) => theme.colors.Gray3};
+  padding: 3.5rem;
+  margin-top: auto; /* 하단에 고정 */
 `;
 
 const StLogoutButton = styled.button`

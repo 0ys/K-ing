@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { getUserProfile } from '../../lib/user';
+import { ActiveUserTabState, ProfileState } from '../../recoil/atom';
 import Loading from '../Loading/Loading';
-import CurationsGrid from './CurationsGrid';
-import PostsGrid from './PostsGrid';
+import CurationsList from './CurationsList';
+import PostsList from './PostsList';
 import ProfileHeader from './ProfileHeader';
 import ProfileTabMenu from './ProfileTabMenu';
 import SettingsButton from './SettingsButton';
 
 function Profile({ isMyPage, userId }) {
-  const [profileData, setProfileData] = useState(null);
-  const [activeTab, setActiveTab] = useState('posts');
+  const [profileData, setProfileData] = useRecoilState(ProfileState);
+  const [activeTab, setActiveTab] = useRecoilState(ActiveUserTabState);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,7 +21,6 @@ function Profile({ isMyPage, userId }) {
 
     const fetchProfile = async () => {
       try {
-        console.log(`🔍 요청 URL: /user/${userId}`);
         const data = await getUserProfile(userId);
         if (isMounted) setProfileData(data.data);
       } catch (error) {
@@ -45,9 +46,6 @@ function Profile({ isMyPage, userId }) {
     );
   }
 
-  console.log('🟢 isMyPage:', isMyPage);
-  console.log('🟢 userId:', userId);
-
   return (
     <ProfileContainer>
       <ProfileHeaderWrapper>
@@ -57,9 +55,13 @@ function Profile({ isMyPage, userId }) {
       {/* ✅ ProfileTabs 적용 */}
       <ProfileTabMenu activeTab={activeTab} onTabChange={setActiveTab} />
       {activeTab === 'posts' ? (
-        <PostsGrid posts={profileData.posts || []} isMyPage={isMyPage} />
+        <PostsList posts={profileData.posts || []} isMyPage={isMyPage} userId={userId} />
       ) : (
-        <CurationsGrid curations={profileData.curations || []} isMyPage={isMyPage} />
+        <CurationsList
+          curations={profileData.curations || []}
+          isMyPage={isMyPage}
+          userId={userId}
+        />
       )}
     </ProfileContainer>
   );

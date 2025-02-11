@@ -1,6 +1,12 @@
-import React, { useState } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import React, { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+import { updateUserProfile } from '../../lib/user';
+import { getUserProfile } from '../../lib/user';
+import { ProfileState } from '../../recoil/atom';
+import { setLanguage } from '../../util/languageUtils';
 import SettingHeader from './SettingHeader';
 
 const languages = [
@@ -11,16 +17,40 @@ const languages = [
 ];
 
 const SettingLanguage = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState('ko');
+  const [profile, setProfile] = useRecoilState(ProfileState);
+  const [selectedLanguage, setSelectedLanguage] = useState(profile.language || 'ko');
 
-  const handleLanguageChange = (languageCode) => {
+  const handleLanguageChange = async (languageCode) => {
     setSelectedLanguage(languageCode);
-    console.log(`언어 변경됨: ${languageCode}`);
+
+    setLanguage(languageCode);
+
+    // API 요청 (언어 변경)
+    const updatedProfile = await updateUserProfile({ language: languageCode });
+
+    // Recoil 상태 업데이트
+    setProfile((prev) => ({
+      ...prev,
+      language: updatedProfile.data.language,
+    }));
   };
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const accessToken = localStorage.getItem('accessToken');
+      if (!profile || !profile.nickname) {
+        // Recoil 상태가 비어 있을 때만 요청
+        const data = await getUserProfile(jwtDecode(accessToken).userId);
+        setProfile(data.data); // Recoil 상태 업데이트
+      }
+    };
+
+    fetchProfile();
+  }, [setProfile]);
 
   return (
     <StSettingLanguageWrapper>
-      <SettingHeader title="언어" />
+      <SettingHeader />
       <St.LanguageList>
         {languages.map((lang) => (
           <St.LanguageItem key={lang.code} onClick={() => handleLanguageChange(lang.code)}>
@@ -51,11 +81,11 @@ const St = {
     justify-content: space-between;
     align-items: center;
     padding: 2rem;
-    border-bottom: 0.1rem solid ${({ theme }) => theme.colors.Gray2}; /* ✅ 구분선 추가 */
+    border-bottom: 0.1rem solid ${({ theme }) => theme.colors.Gray2};
     cursor: pointer;
   `,
   LanguageText: styled.p`
-    ${({ theme }) => theme.fonts.Body2}; /* ✅ 폰트 통일 */
+    ${({ theme }) => theme.fonts.Body2};
   `,
   RadioButton: styled.div`
     width: 2rem;

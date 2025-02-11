@@ -6,10 +6,10 @@ import Nav from '../common/Nav';
 import Profile from './Profile';
 
 const User = () => {
-  const { userId } = useParams(); // ✅ URL에서 userId 가져오기
-  const myId = getUserIdFromToken(); // ✅ 공통 함수 사용
+  const { userId } = useParams(); // URL에서 userId 가져오기
+  const myId = getUserIdFromToken(); // 공통 함수 사용
 
-  const isMyPage = String(myId) === String(userId); // ✅ 내 페이지 여부 체크
+  const isMyPage = String(myId) === String(userId); // 내 페이지 여부 체크
 
   return (
     <St.Container>

@@ -1,0 +1,18 @@
+{
+  "ko": {
+    "pushNotification": "서비스 앱 푸시 알림",
+    "pushNotificationDescription": "관심있는 촬영지 정보를 빠르게 알려드릴게요."
+  },
+  "en": {
+    "pushNotification": "Service App Push Notification",
+    "pushNotificationDescription": "We'll notify you quickly about locations of interest."
+  },
+  "ja": {
+    "pushNotification": "サービスアプリのプッシュ通知",
+    "pushNotificationDescription": "気になる撮影地の情報を素早くお知らせします。"
+  },
+  "zh": {
+    "pushNotification": "服務應用程式推送通知",
+    "pushNotificationDescription": "我們會快速通知您感興趣的拍攝地點信息。"
+  }
+}

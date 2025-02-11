@@ -7,13 +7,13 @@ import { IcBookmarkBlank } from '../../assets/icons';
 import { IcBookmarkFill } from '../../assets/icons';
 
 const CurationItem = forwardRef(({ item }, ref) => {
-  const { id: curationId, title, imageUrl, writerNickname, bookmarked: initialBookmarked } = item;
-  const [bookmarked, setBookmarked] = useState(initialBookmarked);
+  const { curationId, title, imageUrl, writerNickname, bookmarked: initialBookmarked } = item; // 초기 bookmarked 값 가져오기
+  const [bookmarked, setBookmarked] = useState(initialBookmarked); // 초기 상태를 item.bookmarked로 설정
   const navigate = useNavigate();
 
   const handleBookmarkClick = (event) => {
-    event.stopPropagation();
-    setBookmarked((prev) => !prev);
+    event.stopPropagation(); // 이벤트 버블링 방지
+    setBookmarked((prev) => !prev); // 북마크 상태 변경 (true <-> false)
   };
 
   const handleCurationClick = () => {
@@ -28,7 +28,7 @@ const CurationItem = forwardRef(({ item }, ref) => {
         <St.Title>{title}</St.Title>
       </St.Info>
       <St.BookmarkButton onClick={handleBookmarkClick}>
-        {bookmarked ? <IcBookmarkFill /> : <IcBookmarkBlank />}
+        {bookmarked ? <IcBookmarkFill /> : <IcBookmarkBlank />} {/* 상태에 따라 아이콘 변경 */}
       </St.BookmarkButton>
     </StCurationItemWrapper>
   );

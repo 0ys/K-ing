@@ -25,6 +25,7 @@ export { ReactComponent as IcImageUpload } from './ic_image_upload.svg';
 export { ReactComponent as IcImageUploadTrue } from './ic_image_upload_true.svg';
 export { ReactComponent as IcKing } from './ic_king.svg';
 export { ReactComponent as IcLikes } from './ic_likes.svg';
+export { ReactComponent as IcLock } from './ic_lock.svg';
 export { ReactComponent as IcMan } from './ic_man.svg';
 export { ReactComponent as IcMap } from './ic_map.svg';
 export { ReactComponent as IcMarker } from './ic_marker.svg';

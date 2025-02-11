@@ -1,13 +1,22 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { getLanguage, getTranslations } from '../../util/languageUtils';
 import BackButton from '../common/button/BackButton';
 
 const SettingHeader = ({ title }) => {
+  const language = getLanguage();
+  const { setting: settingTranslations } = getTranslations(language);
+  const location = useLocation();
+
+  const settingType = location.pathname.split('/').pop(); // URL에서 'profile', 'notification', 'language' 가져오기
+  const pageTitle = title || settingTranslations[settingType] || '설정';
+
   return (
     <StHeaderWrapper>
       <BackButton />
-      <St.Header>{title}</St.Header>
+      <St.Header>{pageTitle}</St.Header>
     </StHeaderWrapper>
   );
 };

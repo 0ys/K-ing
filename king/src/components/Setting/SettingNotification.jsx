@@ -1,25 +1,52 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+import { updateNotificationSetting } from '../../lib/user';
+import { ProfileState } from '../../recoil/atom';
+import { getLanguage, getTranslations } from '../../util/languageUtils';
 import SettingHeader from './SettingHeader';
 
 const SettingNotification = () => {
-  const [isToggled, setIsToggled] = useState(false);
+  const [profile, setProfile] = useRecoilState(ProfileState);
+  const [language, setLanguage] = useState(getLanguage());
+  const { notification: notificationTranslations = {} } = getTranslations(language);
 
-  const handleToggle = () => {
-    setIsToggled((prev) => !prev);
+  // 언어 변경 감지하여 업데이트
+  useEffect(() => {
+    const handleLanguageChange = () => setLanguage(getLanguage());
+    window.addEventListener('languageChange', handleLanguageChange);
+    return () => window.removeEventListener('languageChange', handleLanguageChange);
+  }, []);
+
+  // 번역 데이터 적용
+  const title = notificationTranslations.pushNotification;
+  const description = notificationTranslations.pushNotificationDescription;
+
+  const isToggled = profile.contentAlarmOn || false;
+
+  const handleToggle = async () => {
+    const newToggleState = !isToggled;
+
+    // API 요청 (알람 설정 변경)
+    const response = await updateNotificationSetting(newToggleState);
+
+    // Recoil 상태 업데이트
+    setProfile((prev) => ({
+      ...prev,
+      contentAlarmOn: response.data.contentAlarmOn,
+    }));
   };
 
   return (
     <StSettingNotificationWrapper>
-      <SettingHeader title="알림" />
+      <SettingHeader />
       <St.NotificationWrapper>
         <St.TextWrapper>
-          <St.Title>서비스 앱 푸시 알림</St.Title>
-          <St.Description>관심있는 촬영지 정보를 빠르게 알려드릴게요.</St.Description>
+          <St.Title>{title}</St.Title>
+          <St.Description>{description}</St.Description>
         </St.TextWrapper>
 
-        {/* ✅ 토글 버튼 (배경 고정 & 부드러운 애니메이션 적용) */}
         <St.ToggleWrapper onClick={handleToggle} $isToggled={isToggled}>
           <St.ToggleBall $isToggled={isToggled} />
         </St.ToggleWrapper>
@@ -60,13 +87,13 @@ const St = {
     width: 4rem;
     height: 2rem;
     background-color: ${({ theme, $isToggled }) =>
-      $isToggled ? theme.colors.Gray1 : theme.colors.Gray3}; /* ✅ "on" 상태 컬러 변경 */
+      $isToggled ? theme.colors.Gray1 : theme.colors.Gray3};
     border-radius: 1.5rem;
     display: flex;
     align-items: center;
     padding: 0.2rem;
     cursor: pointer;
-    transition: background-color 0.3s ease-in-out; /* ✅ 부드러운 전환 효과 */
+    transition: background-color 0.3s ease-in-out;
   `,
   ToggleBall: styled.div`
     width: 1.6rem;
@@ -74,6 +101,6 @@ const St = {
     background-color: white;
     border-radius: 50%;
     transform: ${({ $isToggled }) => ($isToggled ? 'translateX(2rem)' : 'translateX(0)')};
-    transition: transform 0.3s ease-in-out; /* ✅ 토글 이동 애니메이션 */
+    transition: transform 0.3s ease-in-out;
   `,
 };

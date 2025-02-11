@@ -5,9 +5,7 @@ import { IcSetting } from '../../assets/icons';
 
 const SettingsButton = ({ isMyPage }) => {
   const navigate = useNavigate();
-  console.log('isMyPage : ' + isMyPage);
 
-  console.log('✅ SettingsButton 렌더링됨!');
   if (!isMyPage) return null;
 
   const handleSettingClick = () => {

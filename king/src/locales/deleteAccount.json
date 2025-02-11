@@ -1,0 +1,26 @@
+{
+  "ko": {
+    "deleteAccount": "회원 탈퇴",
+    "deleteWarningTitle": "탈퇴 시 유의사항",
+    "deleteWarningMessage": "회원 탈퇴 시 회원님의 프로필과 권한이 삭제되며 다시 복구할 수 없습니다.",
+    "confirmCheck": "유의사항을 모두 확인하였습니다."
+  },
+  "en": {
+    "deleteAccount": "Delete Account",
+    "deleteWarningTitle": "Important Notice for Account Deletion",
+    "deleteWarningMessage": "When you delete your account, your profile and privileges will be removed and cannot be restored.",
+    "confirmCheck": "I have reviewed all the notices."
+  },
+  "ja": {
+    "deleteAccount": "アカウント削除",
+    "deleteWarningTitle": "退会時の注意事項",
+    "deleteWarningMessage": "アカウントを削除すると、プロフィールや権限が削除され、復元できません。",
+    "confirmCheck": "注意事項をすべて確認しました。"
+  },
+  "zh": {
+    "deleteAccount": "删除账户",
+    "deleteWarningTitle": "注销账户时的注意事项",
+    "deleteWarningMessage": "删除账户后，您的个人资料和权限将被删除，无法恢复。",
+    "confirmCheck": "我已查看所有注意事项。"
+  }
+}

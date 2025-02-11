@@ -71,12 +71,28 @@ const UseDraft = atom({
   default: false,
 });
 
+const ProfileState = atom({
+  key: 'profileState',
+  default: {
+    imageUrl: '',
+    nickname: '',
+    description: '',
+  },
+});
+
+const ActiveUserTabState = atom({
+  key: 'activeUserTabState',
+  default: 'posts', // 기본값은 'posts'
+});
+
 export {
+  ActiveUserTabState,
   ContentId,
   ContentType,
   CurationPlaceList,
   DraftExist,
   FilterOption,
+  ProfileState,
   ScrollPosition,
   SearchCategoryState,
   SearchPrevQuery,

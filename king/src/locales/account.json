@@ -1,0 +1,22 @@
+{
+  "ko": {
+    "logoutError": "로그아웃에 실패했습니다. 다시 시도해주세요.",
+    "logout": "로그아웃",
+    "deleteAccount": "회원 탈퇴"
+  },
+  "en": {
+    "logoutError": "Logout failed. Please try again.",
+    "logout": "Logout",
+    "deleteAccount": "Delete Account"
+  },
+  "ja": {
+    "logoutError": "ログアウトに失敗しました。もう一度お試しください。",
+    "logout": "ログアウト",
+    "deleteAccount": "アカウント削除"
+  },
+  "zh": {
+    "logoutError": "登出失败。请重试。",
+    "logout": "登出",
+    "deleteAccount": "删除账户"
+  }
+}

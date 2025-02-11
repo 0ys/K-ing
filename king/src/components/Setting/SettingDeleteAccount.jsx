@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { deleteAccount } from '../../lib/auth';
+import { getLanguage, getTranslations } from '../../util/languageUtils';
 import SettingHeader from './SettingHeader';
 
 const SettingDeleteAccount = () => {
   const navigate = useNavigate();
-  const [checked, setChecked] = useState(false); // 🔹 체크박스 상태 추가
+  const [checked, setChecked] = useState(false); // 체크박스 상태 추가
+  const [language, setLanguage] = useState(getLanguage());
+  const { deleteAccount: deleteAccountTranslations } = getTranslations(language);
+
+  // 언어 변경 감지하여 업데이트
+  useEffect(() => {
+    const handleLanguageChange = () => setLanguage(getLanguage());
+    window.addEventListener('languageChange', handleLanguageChange);
+    return () => window.removeEventListener('languageChange', handleLanguageChange);
+  }, []);
 
   const handleDeleteAccount = async () => {
-    if (!window.confirm('정말로 계정을 삭제하시겠습니까?')) return;
+    if (!window.confirm(deleteAccountTranslations.deleteWarningMessage)) return;
 
     const result = await deleteAccount();
 
@@ -24,12 +34,10 @@ const SettingDeleteAccount = () => {
 
   return (
     <StDeleteAccountWrapper>
-      <SettingHeader title="회원 탈퇴" />
+      <SettingHeader title={deleteAccountTranslations.deleteAccount} />
       <St.ContentWrapper>
-        <St.QuestionText>회원탈퇴 유의사항</St.QuestionText>
-        <St.WarningBox>
-          회원 탈퇴 시 회원님의 프로필과 콘텐츠는 모두 삭제되며 다시 복구할 수 없습니다.
-        </St.WarningBox>
+        <St.QuestionText>{deleteAccountTranslations.deleteWarningTitle}</St.QuestionText>
+        <St.WarningBox>{deleteAccountTranslations.deleteWarningMessage}</St.WarningBox>
 
         <St.CheckboxWrapper>
           <St.Checkbox
@@ -39,14 +47,14 @@ const SettingDeleteAccount = () => {
             onChange={() => setChecked((prev) => !prev)}
           />
           <St.CheckboxLabel htmlFor="confirmCheck">
-            유의사항을 모두 확인하였습니다.
+            {deleteAccountTranslations.confirmCheck}
           </St.CheckboxLabel>
         </St.CheckboxWrapper>
       </St.ContentWrapper>
 
       <St.ButtonWrapper>
         <St.DeleteButton onClick={handleDeleteAccount} disabled={!checked}>
-          회원 탈퇴
+          {deleteAccountTranslations.deleteAccount}
         </St.DeleteButton>
       </St.ButtonWrapper>
     </StDeleteAccountWrapper>
