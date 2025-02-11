@@ -23,7 +23,6 @@ import com.king.backend.s3.service.S3Service;
 import com.king.backend.search.util.CursorUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -74,27 +73,25 @@ public class CurationService {
     @Transactional
     public CurationListResponseDTO getCurations(CurationQueryRequestDTO requestDTO) {
         Long userId = requestDTO.getUserId();
-        String cursor = requestDTO.getCursor();
         int size = Optional.ofNullable(requestDTO.getSize()).orElse(10);
-        List<Object> sortValues = (cursor != null) ? cursorUtil.decodeCursor(cursor) : null;
+
+        String cursor = requestDTO.getCursor();
+        Long cursorId = (cursor != null) ? Long.parseLong(cursorUtil.decodeCursor(cursor).get(0).toString()) : null;
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         OAuth2UserDTO authUser = (OAuth2UserDTO) authentication.getPrincipal();
 
         Long authId = Long.parseLong(authUser.getName());
 
-        List<CurationList> curations;
-
-        if (userId == null) {
-            curations = getPublicCurationList(sortValues, size);
-        } else {
-            User user = userRepository.findByIdAndStatus(userId, "ROLE_REGISTERED")
-                    .orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
-
-            curations = (userId.equals(authId))
-                    ? getSelfCurationList(user, sortValues, size)
-                    : getPublicCurationList(user, sortValues, size);
-        }
+        Boolean isPublic = authId.equals(requestDTO.getUserId()) ? null : true;
+        List<CurationList> curations = curationListRepository.searchCurations(
+                userId,
+                isPublic,
+                cursorId,
+                size,
+                requestDTO.getBookmarked(),
+                authId
+        );
 
         String nextCursor = (curations.size() == size)
                 ? cursorUtil.encodeCursor(List.of(curations.get(curations.size() - 1).getId()))
@@ -102,33 +99,6 @@ public class CurationService {
 
         Set<Long> bookmarkedCurationIds = curationListBookmarkRepository.findCurationListIdByUserId(authId);
         return CurationListResponseDTO.fromEntity(curations, bookmarkedCurationIds, nextCursor);
-    }
-
-    private List<CurationList> getPublicCurationList(List<Object> sortValues, int size) {
-        if (sortValues == null) {
-            return curationListRepository.findAllByIsPublicOrderByIdDesc(true, PageRequest.of(0, size));
-        } else {
-            Long id = Long.parseLong(sortValues.get(0).toString());
-            return curationListRepository.findByIsPublicAndIdLessThanOrderByIdDesc(true, id, PageRequest.of(0, size));
-        }
-    }
-
-    private List<CurationList> getPublicCurationList(User user, List<Object> sortValues, int size) {
-        if (sortValues == null || sortValues.isEmpty()) {
-            return curationListRepository.findAllByIsPublicAndWriterOrderByIdDesc(true, user, PageRequest.of(0, size));
-        } else {
-            Long id = Long.parseLong(sortValues.get(0).toString());
-            return curationListRepository.findByIsPublicAndWriterAndIdLessThanOrderByIdDesc(true, user, id, PageRequest.of(0, size));
-        }
-    }
-
-    private List<CurationList> getSelfCurationList(User user, List<Object> sortValues, int size) {
-        if (sortValues == null) {
-            return curationListRepository.findAllByWriterOrderByIdDesc(user, PageRequest.of(0, size));
-        } else {
-            Long id = Long.parseLong(sortValues.get(0).toString());
-            return curationListRepository.findByWriterAndIdLessThanOrderByIdDesc(user, id, PageRequest.of(0, size));
-        }
     }
 
     @Transactional
@@ -260,6 +230,7 @@ public class CurationService {
             throw new CustomException(CurationErrorCode.FORBIDDEN_CURATION);
         }
 
+        curationListBookmarkRepository.deleteAllByCurationList(curation);
         curationListItemRepository.deleteAllByCurationList(curation);
         curationListRepository.delete(curation);
     }

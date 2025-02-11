@@ -11,4 +11,5 @@ public class CurationQueryRequestDTO {
     Long userId;
     Integer size;
     String cursor;
+    Boolean bookmarked;
 }
