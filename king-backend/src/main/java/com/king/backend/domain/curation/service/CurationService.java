@@ -1,7 +1,7 @@
 package com.king.backend.domain.curation.service;
 
-import com.king.backend.domain.curation.dto.request.CurationListRequestDTO;
-import com.king.backend.domain.curation.dto.request.CurationPostRequestDTO;
+import com.king.backend.domain.curation.dto.request.CurationQueryRequestDTO;
+import com.king.backend.domain.curation.dto.request.CurationRequestDTO;
 import com.king.backend.domain.curation.dto.response.CurationDetailResponseDTO;
 import com.king.backend.domain.curation.dto.response.CurationListResponseDTO;
 import com.king.backend.domain.curation.entity.CurationList;
@@ -33,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -71,7 +72,7 @@ public class CurationService {
     }
 
     @Transactional
-    public CurationListResponseDTO getCurations(CurationListRequestDTO requestDTO) {
+    public CurationListResponseDTO getCurations(CurationQueryRequestDTO requestDTO) {
         Long userId = requestDTO.getUserId();
         String cursor = requestDTO.getCursor();
         int size = Optional.ofNullable(requestDTO.getSize()).orElse(10);
@@ -99,7 +100,8 @@ public class CurationService {
                 ? cursorUtil.encodeCursor(List.of(curations.get(curations.size() - 1).getId()))
                 : null;
 
-        return CurationListResponseDTO.fromEntity(curations, nextCursor);
+        Set<Long> bookmarkedCurationIds = curationListBookmarkRepository.findCurationListIdByUserId(authId);
+        return CurationListResponseDTO.fromEntity(curations, bookmarkedCurationIds, nextCursor);
     }
 
     private List<CurationList> getPublicCurationList(List<Object> sortValues, int size) {
@@ -130,7 +132,7 @@ public class CurationService {
     }
 
     @Transactional
-    public CurationDetailResponseDTO postCuration(CurationPostRequestDTO requestDTO, MultipartFile imageFile) {
+    public CurationDetailResponseDTO postCuration(CurationRequestDTO requestDTO, MultipartFile imageFile) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         OAuth2UserDTO authUser = (OAuth2UserDTO) authentication.getPrincipal();
         Long userId = Long.parseLong(authUser.getName());
@@ -139,7 +141,6 @@ public class CurationService {
 
         if (!ValidationUtil.checkNotNullAndLengthLimit(requestDTO.getTitle(), 50)
                 || requestDTO.getDescription().length() > 1000
-                || requestDTO.getIsPublic() == null
                 || requestDTO.getPlaceIds().isEmpty()) {
             throw new CustomException(CurationErrorCode.INVALID_VALUE);
         }
@@ -152,7 +153,7 @@ public class CurationService {
         String imageUrl = s3Service.uploadFile(curation, imageFile);
         curation.setTitle(requestDTO.getTitle());
         curation.setDescription(requestDTO.getDescription());
-        curation.setPublic(requestDTO.getIsPublic());
+        curation.setPublic(requestDTO.isPublic());
         curation.setImageUrl(imageUrl);
         curation.setWriter(user);
         curation.setCreatedAt(OffsetDateTime.now());
@@ -186,7 +187,7 @@ public class CurationService {
     }
 
     @Transactional
-    public CurationDetailResponseDTO putCuration(Long curationId, CurationPostRequestDTO requestDTO, MultipartFile imageFile) {
+    public CurationDetailResponseDTO putCuration(Long curationId, CurationRequestDTO requestDTO, MultipartFile imageFile) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         OAuth2UserDTO authUser = (OAuth2UserDTO) authentication.getPrincipal();
         Long userId = Long.parseLong(authUser.getName());
@@ -202,7 +203,6 @@ public class CurationService {
 
         if (!ValidationUtil.checkNotNullAndLengthLimit(requestDTO.getTitle(), 50)
                 || requestDTO.getDescription().length() > 1000
-                || requestDTO.getIsPublic() == null
                 || requestDTO.getPlaceIds().isEmpty()) {
             throw new CustomException(CurationErrorCode.INVALID_VALUE);
         }
@@ -213,7 +213,7 @@ public class CurationService {
         }
         curation.setTitle(requestDTO.getTitle());
         curation.setDescription(requestDTO.getDescription());
-        curation.setPublic(requestDTO.getIsPublic());
+        curation.setPublic(requestDTO.isPublic());
 
         curationListRepository.save(curation);
 

@@ -1,7 +1,7 @@
 package com.king.backend.domain.curation.controller;
 
-import com.king.backend.domain.curation.dto.request.CurationListRequestDTO;
-import com.king.backend.domain.curation.dto.request.CurationPostRequestDTO;
+import com.king.backend.domain.curation.dto.request.CurationQueryRequestDTO;
+import com.king.backend.domain.curation.dto.request.CurationRequestDTO;
 import com.king.backend.domain.curation.dto.response.CurationDetailResponseDTO;
 import com.king.backend.domain.curation.dto.response.CurationListResponseDTO;
 import com.king.backend.domain.curation.service.CurationService;
@@ -33,14 +33,14 @@ public class CurationController {
 
     @Operation(summary = "큐레이션 목록 조회")
     @GetMapping("")
-    public ResponseEntity<ApiResponse<CurationListResponseDTO>> getCurations(@ModelAttribute CurationListRequestDTO requestDTO) {
+    public ResponseEntity<ApiResponse<CurationListResponseDTO>> getCurations(@ModelAttribute CurationQueryRequestDTO requestDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(curationService.getCurations(requestDTO)));
     }
 
-    @Operation(summary = "큐레이션 등록")
+    @Operation(summary = "큐레이션 생성")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<CurationDetailResponseDTO>> postCurations(
-            @RequestPart(value = "curation") CurationPostRequestDTO requestDTO,
+            @RequestPart(value = "curation") CurationRequestDTO requestDTO,
             @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(curationService.postCuration(requestDTO, imageFile)));
     }
@@ -49,7 +49,7 @@ public class CurationController {
     @PutMapping(value = "/{curationId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<CurationDetailResponseDTO>> putCuration(
             @PathVariable(value = "curationId") Long curationId,
-            @RequestPart(value = "curation") CurationPostRequestDTO requestDTO,
+            @RequestPart(value = "curation") CurationRequestDTO requestDTO,
             @RequestPart(value = "imageFile", required = false) MultipartFile imageFile){
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(curationService.putCuration(curationId, requestDTO, imageFile)));
     }

@@ -13,7 +13,7 @@ public class CurationDraftResponseDTO {
     private String title;
     private String description;
     private byte[] imageData;
-    private Boolean isPublic;
+    private boolean isPublic;
     private List<PlaceDTO> places;
 
     @Getter

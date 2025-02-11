@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @AllArgsConstructor
@@ -13,10 +14,10 @@ public class CurationListResponseDTO {
     private List<CurationDTO> curations;
     private String nextCursor;
 
-    public static CurationListResponseDTO fromEntity(List<CurationList> curations, String nextCursor) {
+    public static CurationListResponseDTO fromEntity(List<CurationList> curations, Set<Long> bookmarkedCurationIds, String nextCursor) {
         return new CurationListResponseDTO(
                 curations.stream()
-                        .map(CurationDTO::fromEntity)
+                        .map(curation -> CurationDTO.fromEntity(curation, bookmarkedCurationIds.contains(curation.getId())))
                         .toList(),
                 nextCursor
         );
@@ -31,14 +32,16 @@ public class CurationListResponseDTO {
         private String imageUrl;
         private String writerNickname;
         private boolean isPublic;
+        private boolean bookmarked;
 
-        public static CurationDTO fromEntity(CurationList curation) {
+        public static CurationDTO fromEntity(CurationList curation, boolean bookmarked) {
             return new CurationDTO(
                     curation.getId(),
                     curation.getTitle(),
                     curation.getImageUrl(),
                     curation.getWriter().getNickname(),
-                    curation.isPublic()
+                    curation.isPublic(),
+                    bookmarked
             );
         }
     }

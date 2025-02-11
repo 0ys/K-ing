@@ -21,6 +21,7 @@ public class CurationDetailResponseDTO {
     private String imageUrl;
     private OffsetDateTime createdAt;
     private boolean bookmarked;
+    private boolean isPublic;
     private WriterDTO writer;
     private List<PlaceDTO> places;
 
@@ -36,6 +37,7 @@ public class CurationDetailResponseDTO {
                 curationList.getImageUrl(),
                 curationList.getCreatedAt(),
                 bookmarked,
+                curationList.isPublic(),
                 WriterDTO.fromEntity(curationList.getWriter()),
                 places.stream()
                         .map(PlaceDTO::fromEntity)

@@ -1,6 +1,6 @@
 package com.king.backend.domain.curation.controller;
 
-import com.king.backend.domain.curation.dto.request.CurationPostRequestDTO;
+import com.king.backend.domain.curation.dto.request.CurationRequestDTO;
 import com.king.backend.domain.curation.dto.response.CurationDraftResponseDTO;
 import com.king.backend.domain.curation.service.CurationDraftService;
 import com.king.backend.global.response.ApiResponse;
@@ -23,7 +23,7 @@ public class CurationDraftController {
     @Operation(summary = "큐레이션 임시저장 하기")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<Void>> postCuration(
-            @RequestPart(value = "curation") CurationPostRequestDTO requestDTO,
+            @RequestPart(value = "curation") CurationRequestDTO requestDTO,
             @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
             curationDraftService.saveDraft(requestDTO, imageFile);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(null));

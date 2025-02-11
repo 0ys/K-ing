@@ -1,6 +1,6 @@
 package com.king.backend.domain.curation.service;
 
-import com.king.backend.domain.curation.dto.request.CurationPostRequestDTO;
+import com.king.backend.domain.curation.dto.request.CurationRequestDTO;
 import com.king.backend.domain.curation.dto.response.CurationDraftResponseDTO;
 import com.king.backend.domain.curation.errorcode.CurationErrorCode;
 import com.king.backend.domain.place.entity.Place;
@@ -28,7 +28,7 @@ public class CurationDraftService {
     private final RedisUtil redisUtil;
     private final PlaceRepository placeRepository;
 
-    public void saveDraft(CurationPostRequestDTO reqDto, MultipartFile imageFile) {
+    public void saveDraft(CurationRequestDTO reqDto, MultipartFile imageFile) {
         if (reqDto.getTitle() != null && reqDto.getTitle().length() > 50) {
             throw new CustomException(CurationErrorCode.INVALID_VALUE);
         }
@@ -70,7 +70,7 @@ public class CurationDraftService {
         String draftKey = getDraftKey();
         String imageKey = draftKey + ":image";
 
-        CurationPostRequestDTO draft = redisUtil.getJsonValue(draftKey, CurationPostRequestDTO.class);
+        CurationRequestDTO draft = redisUtil.getJsonValue(draftKey, CurationRequestDTO.class);
         byte[] imageData = redisUtil.getBinaryValue(imageKey);
 
         if (draft == null && imageData == null) {
@@ -82,7 +82,7 @@ public class CurationDraftService {
         if (draft != null) {
             responseDTO.setTitle(draft.getTitle());
             responseDTO.setDescription(draft.getDescription());
-            responseDTO.setIsPublic(draft.getIsPublic());
+            responseDTO.setPublic(draft.isPublic());
 
             List<CurationDraftResponseDTO.PlaceDTO> places = new ArrayList<>();
             if (draft.getPlaceIds() != null) {

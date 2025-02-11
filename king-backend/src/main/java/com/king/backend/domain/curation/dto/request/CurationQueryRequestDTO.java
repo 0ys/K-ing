@@ -7,7 +7,7 @@ import org.springdoc.core.annotations.ParameterObject;
 @Getter
 @Setter
 @ParameterObject
-public class CurationListRequestDTO {
+public class CurationQueryRequestDTO {
     Long userId;
     Integer size;
     String cursor;
