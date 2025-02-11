@@ -31,8 +31,8 @@ const Comment = forwardRef(({ data }, ref) => {
         <UserProfile>
           <Profile style={{ backgroundImage: `url(${imageUrl})` }} alt="profile" />
           <p>{nickname}</p>
+          <p id="date">{getRelativeCommentDate(createdAt)}</p>
         </UserProfile>
-        <DateWrapper>{getRelativeCommentDate(createdAt)}</DateWrapper>
       </UserInfo>
 
       <Caption>
@@ -48,17 +48,12 @@ export default Comment;
 const CommentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: start;
   margin-top: 1rem;
-
-  width: 100%;
 `;
 
 const UserInfo = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
   align-items: center;
 
   gap: 1rem;
@@ -67,16 +62,19 @@ const UserInfo = styled.div`
 const UserProfile = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
   align-items: center;
 
   gap: 1rem;
-
   width: 100%;
 
   p {
     ${({ theme }) => theme.fonts.Title6};
     color: ${({ theme }) => theme.colors.Gray1};
+  }
+
+  #date {
+    ${({ theme }) => theme.fonts.Body6};
+    color: ${({ theme }) => theme.colors.Gray2};
   }
 `;
 
@@ -88,13 +86,6 @@ const Profile = styled.div`
 
   background-size: cover;
   background-position: center;
-`;
-
-const DateWrapper = styled.div`
-  width: 100%;
-
-  ${({ theme }) => theme.fonts.Body6};
-  color: ${({ theme }) => theme.colors.Gray2};
 `;
 
 const Caption = styled.div`

@@ -54,6 +54,5 @@ const FixedContainer = styled.div`
 `;
 
 const CurationWrapper = styled.div`
-  margin-top: 1rem;
   width: 100%;
 `;

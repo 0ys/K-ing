@@ -1,13 +1,13 @@
 import React from 'react';
 
-import SearchKeyword from '../components/Search/SearchKeyword';
+import SearchDetail from '../components/Search/SearchDetail';
 
-const SearchKeywordpage = () => {
+const SearchDetailPage = () => {
   return (
     <>
-      <SearchKeyword />
+      <SearchDetail />
     </>
   );
 };
 
-export default SearchKeywordpage;
+export default SearchDetailPage;

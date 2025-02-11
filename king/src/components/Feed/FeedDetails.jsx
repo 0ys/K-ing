@@ -175,7 +175,7 @@ const FeedDetails = () => {
         )}
       </Header>
       <UserInfo>
-        <Profile style={{ backgroundImage: `url(${userInfo.imageUrl})` }} alt="default" />
+        <Profile style={{ backgroundImage: `url(${writer.imageUrl})` }} alt="default" />
         <UserName>{writer.nickname}</UserName>
       </UserInfo>
 
@@ -214,7 +214,7 @@ const FeedDetails = () => {
             ))}
         </CommentContainer>
         <NewCommentContainer>
-          <Profile style={{ backgroundImage: `url(${writer.imageUrl})` }} alt="profile" />
+          <Profile style={{ backgroundImage: `url(${userInfo.imageUrl})` }} alt="profile" />
           <CommentInput
             type="text"
             placeholder={`${writer.nickname}님에게 댓글 추가..`}

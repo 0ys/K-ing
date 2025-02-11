@@ -27,10 +27,12 @@ import BackButton from '../common/button/BackButton';
 import Nav from '../common/Nav';
 import SearchBar from '../common/SearchBar';
 import DraftModal from './Modal/DraftModal';
+import UploadingModal from './Modal/UploadingModal';
 
 const PostUpload = ({ state }) => {
   const { postId } = useParams();
   const create = useModal();
+  const upload = useModal();
   const toggle = useToggle(false);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -108,10 +110,11 @@ const PostUpload = ({ state }) => {
         public: toggle.toggle,
       };
 
+      upload.setShowing(true);
       const res = await createPost(postInfo, imageFile);
-      if (res.data) {
-        alert('게시물을 성공적으로 공유하였습니다.');
+      upload.setShowing(false);
 
+      if (res.data) {
         navigate(`/feed/${res.data}`, { state: { from: { pathname: location.pathname } } });
       }
     }
@@ -125,11 +128,11 @@ const PostUpload = ({ state }) => {
         public: toggle.toggle,
       };
 
+      upload.setShowing(true);
       const res = await updatePost(postId, postInfo, imageFile);
+      upload.setShowing(false);
 
       if (res.success) {
-        alert('게시물을 성공적으로 수정하였습니다.');
-
         navigate(`/feed/${postId}`, { state: { from: { pathname: location.pathname } } });
       }
     }
@@ -280,6 +283,9 @@ const PostUpload = ({ state }) => {
 
       <StUploadModalWrapper $showing={create.isShowing}>
         <DraftModal isShowing={create.isShowing} handleCancel={create.toggle} />
+      </StUploadModalWrapper>
+      <StUploadModalWrapper $showing={upload.isShowing}>
+        <UploadingModal isShowing={upload.isShowing} />
       </StUploadModalWrapper>
     </>
   );
