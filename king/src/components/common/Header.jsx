@@ -101,7 +101,7 @@ const Container = styled.div`
 const StHeader = styled.div`
   display: flex;
   align-items: center;
-  padding: 1.4rem 1rem;
+  padding: 1rem;
   gap: 1rem;
 `;
 

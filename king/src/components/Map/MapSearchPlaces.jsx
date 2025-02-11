@@ -54,14 +54,21 @@ const MapSearchPlaces = () => {
         categories: allFalse ? { ...updatedCategories } : updatedCategories,
       };
     });
-
-    console.log(filterOption.categories);
   };
 
-  const filteredPlaces = places.filter((place) => {
+  const roundedPlaces = places.map((place) => ({
+    ...place,
+    lat: parseFloat(place.lat.toFixed(4)),
+    lng: parseFloat(place.lng.toFixed(4)),
+  }));
+
+  const filteredPlaces = roundedPlaces.filter((place) => {
     if (Object.values(filterOption.categories).every((value) => !value)) return true;
     return filterOption.categories[place.type];
   });
+  // console.log('마커 개수:', places.length);
+  // const filteredPlaces = places.slice(0, 6000); // limit
+  // console.log('필터 마커커 개수:', filteredPlaces.length);
 
   if (loading) return <Loading />;
 

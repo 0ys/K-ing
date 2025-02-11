@@ -19,6 +19,8 @@ import StationMarker from '/src/assets/marker/station-marker.png';
 import StayMarker from '/src/assets/marker/stay-marker.png';
 import StoreMarker from '/src/assets/marker/store-marker.png';
 
+import Loading from '../Loading/Loading';
+
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 const GOOGLE_MAPS_MAP_ID = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID;
 const libraries = ['marker', 'geometry'];
@@ -70,6 +72,12 @@ const GoogleMapView = ({ places, isSearch, onMarkerClick }) => {
     googleMapsApiKey: GOOGLE_MAPS_API_KEY,
     libraries,
   });
+
+  useEffect(() => {
+    if (mapInstance && places.length > 0) {
+      mapInstance.setCenter({ lat: places[0].lat, lng: places[0].lng });
+    }
+  }, [places]);
 
   const createMarker = useCallback(
     (map, place) => {
@@ -252,8 +260,14 @@ const GoogleMapView = ({ places, isSearch, onMarkerClick }) => {
     }
   }, [mapInstance, places, preventFitBounds, activePlaceId]);
 
+  const handleMapLoad = useCallback((map) => {
+    setMapInstance(map);
+  }, []);
+
   if (loadError) return <div>Error loading maps</div>;
-  if (!isLoaded) return <div>Loading maps...</div>;
+  if (!isLoaded) {
+    return <Loading />;
+  }
 
   return (
     <GoogleMapContainer>
@@ -262,7 +276,7 @@ const GoogleMapView = ({ places, isSearch, onMarkerClick }) => {
         center={center || { lat: 37.5665, lng: 126.978 }}
         zoom={14}
         options={mapOptions}
-        onLoad={(map) => setMapInstance(map)}
+        onLoad={handleMapLoad}
         onIdle={handleIdle} // 지도 이동 후 이벤트
       />
 
@@ -282,8 +296,11 @@ const GoogleMapView = ({ places, isSearch, onMarkerClick }) => {
 };
 
 const GoogleMapContainer = styled.div`
+  position: relative;
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 16rem);
+  min-height: 40rem;
+  background-color: red;
 
   @keyframes pulse {
     0% {
@@ -303,35 +320,35 @@ const GoogleMapContainer = styled.div`
 
 const HereButton = styled.button`
   position: absolute;
-  bottom: 40px;
-  right: 20px;
+  bottom: 4rem;
+  right: 2rem;
   background-color: #fff;
   color: white;
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 4rem;
+  height: 4rem;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  z-index: 500;
+  z-index: 1000;
 
   &:hover {
     background-color: #ccc;
   }
 
   img {
-    width: 15px;
-    height: 15px;
+    width: 1.5rem;
+    height: 1.5rem;
     object-fit: contain; /* 이미지가 왜곡되지 않도록 설정 */
   }
 `;
 
 const SearchButton = styled.button`
   position: absolute;
-  bottom: 45px;
+  bottom: 4.5rem;
   left: 50%;
   transform: translateX(-50%);
   background-color: #ffffff;
@@ -339,13 +356,13 @@ const SearchButton = styled.button`
   color: ${({ theme }) => theme.colors.Gray0};
   border: none;
   border-radius: 20px;
-  padding: 6px 12px;
+  padding: 0.6rem 1.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 1rem;
   cursor: pointer;
-  z-index: 500;
+  z-index: 1000;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
   &:hover {
@@ -353,8 +370,8 @@ const SearchButton = styled.button`
   }
 
   img {
-    width: 15px;
-    height: 15px;
+    width: 1.5rem;
+    height: 1.5rem;
     object-fit: contain; /* 이미지가 왜곡되지 않도록 설정 */
   }
 `;

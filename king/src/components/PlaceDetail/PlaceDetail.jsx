@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import Nav from '/src/components/common/Nav';
 
+import { IcPencil } from '../../assets/icons';
 import { getPlaceDetail } from '../../lib/place';
 import Bottom from '../common/Bottom';
 import DetailHeader from '../common/DetailHeader';
@@ -16,8 +17,9 @@ const PlaceDetail = () => {
   const navigate = useNavigate();
   const { placeId } = useParams();
   const [placeData, setPlaceData] = useState(null);
-
   const [loading, setLoading] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [displayRelatedContents, setdisplayRelatedContents] = useState([]);
 
   useEffect(() => {
     const fetchPlace = async () => {
@@ -31,6 +33,14 @@ const PlaceDetail = () => {
 
     fetchPlace();
   }, [placeId]);
+
+  useEffect(() => {
+    if (placeData?.relatedContents) {
+      setdisplayRelatedContents(
+        isExpanded ? placeData.relatedContents : placeData.relatedContents.slice(0, 2),
+      );
+    }
+  }, [placeData, isExpanded]);
 
   if (loading) return <Loading />;
 
@@ -48,16 +58,27 @@ const PlaceDetail = () => {
       />
 
       <Content>
-        {/* 장소 관련 작품 정보 */}
-        {placeData.relatedContents.map((info) => (
-          <ContentsInfo key={info.contentId} info={info} />
-        ))}
-
         {/* 길찾기, 공유 버튼 */}
         <FunctionButton dest={placeData} />
 
         {/* 장소 상세 정보 */}
         <PlaceInfo placeData={placeData} />
+
+        {/* 장소 관련 작품 정보 */}
+        <IconText>
+          <IcPencil />
+          <p>관련 작품</p>
+        </IconText>
+        {displayRelatedContents.map((info) => (
+          <ContentsInfo key={info.contentId} info={info} />
+        ))}
+        <ContentButtonWrapper>
+          {placeData.relatedContents?.length > 2 && (
+            <ShowMoreButton onClick={() => setIsExpanded(!isExpanded)}>
+              {isExpanded ? '접기' : '더보기'}
+            </ShowMoreButton>
+          )}
+        </ContentButtonWrapper>
 
         <BottomContainer>
           <ActionButton onClick={handleRoute}>다른 팬의 인증샷이 궁금하다면?</ActionButton>
@@ -78,6 +99,42 @@ const Container = styled.div`
 const Content = styled.div`
   padding: 2rem;
   position: relative;
+`;
+
+const ContentButtonWrapper = styled.ul`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
+const ShowMoreButton = styled.button`
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
+
+  ${({ theme }) => theme.fonts.Body4};
+  color: ${({ theme }) => theme.colors.Gray0};
+`;
+
+const IconText = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 1rem 0;
+
+  svg {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+
+  p {
+    width: 100%;
+    padding: 0.5rem 0;
+    text-align: left;
+    ${({ theme }) => theme.fonts.Title4};
+  }
 `;
 
 const BottomContainer = styled.div`

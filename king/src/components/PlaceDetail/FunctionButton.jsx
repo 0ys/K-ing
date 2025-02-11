@@ -30,13 +30,13 @@ const FunctionButton = ({ dest }) => {
       {/* 길찾기 모달 */}
       <DeepLinkModal dest={dest} isModalVisible={link.isShowing} onClick={link.toggle} />
 
-      {/* <ShareButton onClick={openShareModal}>
+      <ShareButton onClick={openShareModal}>
         <img src={ShareIcon} alt="Share" />
         공유
-      </ShareButton> */}
+      </ShareButton>
 
       {/* 공유 모달 */}
-      {/* <ShareModal isModalVisible={isShareModalVisible} onClick={closeShareModal} /> */}
+      <ShareModal isModalVisible={isShareModalVisible} onClick={closeShareModal} />
     </ButtonContainer>
   );
 };
@@ -45,13 +45,13 @@ const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0.6rem 0rem;
-  gap: 1rem;
+  justify-content: flex-end;
+  gap: 0.5rem;
 `;
 
 const DirectionButton = styled.button`
   ${({ theme }) => theme.fonts.Body2};
-  background-color: ${({ theme }) => theme.colors.Gray0};
+  background-color: ${({ theme }) => theme.colors.MainBlue};
   color: white;
   display: flex;
   flex-direction: row;

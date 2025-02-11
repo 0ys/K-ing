@@ -36,15 +36,15 @@ const PlaceInfo = ({ placeData }) => {
       <Details>
         <img src={PhoneIcon} alt="Phone" /> &nbsp; {phone}
       </Details>
-      <Details>
+      {/* <Details>
         <img src={PenIcon} alt="Pen" /> &nbsp; {formatDate(createdAt)}
-      </Details>
+      </Details> */}
     </DetailContainer>
   );
 };
 
 const DetailContainer = styled.div`
-  padding: 2rem 0;
+  padding: 1rem 0;
   display: flex;
   flex-direction: column;
   justify-content: center;

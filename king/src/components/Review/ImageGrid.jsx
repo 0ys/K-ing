@@ -1,12 +1,23 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-const ImageGrid = ({ images }) => {
+const ImageGrid = ({ images, lastElementRef }) => {
+  const navigate = useNavigate();
+
+  const handleImageClick = (postId) => {
+    navigate(`/feed/${postId}`);
+  };
+
   return (
     <GridContainer>
       {images.map((image, index) => (
-        <GridItem key={index}>
-          <Image src={image} alt={`image-${index}`} />
+        <GridItem
+          key={index}
+          ref={index === images.length - 1 ? lastElementRef : null}
+          onClick={() => handleImageClick(image.postId)}
+        >
+          <Image src={image.imageUrl} alt={`image-${index}`} />
         </GridItem>
       ))}
     </GridContainer>
