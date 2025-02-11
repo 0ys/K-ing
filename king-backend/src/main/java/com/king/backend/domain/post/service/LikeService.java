@@ -39,21 +39,6 @@ public class LikeService {
         OAuth2UserDTO oauthUser = (OAuth2UserDTO) authentication.getPrincipal();
         Long userId = Long.parseLong(oauthUser.getName());
 
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
-//
-//        Post post = postRepository.findById(postId)
-//                .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
-//
-//        if (likeRepository.existsByPostIdAndUserId(postId, userId)) {
-//            throw new CustomException(LikeErrorCode.ALREADY_LIKED);
-//        }
-//
-//        likeRepository.save(Like.builder()
-//                .post(post)
-//                .user(user)
-//                .build());
-
         postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
 
@@ -73,10 +58,6 @@ public class LikeService {
         OAuth2UserDTO oauthUser = (OAuth2UserDTO) authentication.getPrincipal();
         Long userId = Long.parseLong(oauthUser.getName());
 
-//        Like like = likeRepository.findByPostIdAndUserId(postId, userId)
-//                .orElseThrow(() -> new CustomException(LikeErrorCode.ALREADY_UNLIKED));
-//
-//        likeRepository.delete(like);
         postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
 
