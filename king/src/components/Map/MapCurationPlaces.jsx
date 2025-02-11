@@ -74,7 +74,7 @@ const MapCurationPlaces = () => {
               ))}
 
               {/* 길찾기, 공유 버튼 */}
-              <FunctionButton />
+              <FunctionButton dest={placeData} />
 
               {/* 장소 상세 정보 */}
               <PlaceInfo placeData={placeData} />

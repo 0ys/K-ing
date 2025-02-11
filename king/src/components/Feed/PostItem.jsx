@@ -72,10 +72,18 @@ const St = {
     color: #464656;
   `,
   Title: styled.h3`
-    margin: 4px 0 0;
+    margin: 0.2rem 0 0;
     padding-right: 0.5rem;
-    ${({ theme }) => theme.fonts.Title6};
-    font-size: 13px;
+    ${({ theme }) => theme.fonts.Body5};
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2em;
+    max-height: 2.4em;
+    white-space: normal;
   `,
   Date: styled.p`
     ${({ theme }) => theme.fonts.Body6};

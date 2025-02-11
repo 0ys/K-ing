@@ -152,6 +152,10 @@ const PostUpload = ({ state }) => {
   };
 
   const handleCaptionChange = (event) => {
+    if (event.target.value.length > 1000) {
+      alert('글자수는 최대 1000자까지 입력 가능합니다.');
+    }
+
     setCaption(event.target.value);
   };
 
@@ -217,7 +221,7 @@ const PostUpload = ({ state }) => {
 
   return (
     <>
-      <StHomeWrapper>
+      <StUploadWrapper>
         <IconText>
           <BackButton />
           <p>새 인증샷</p>
@@ -277,7 +281,7 @@ const PostUpload = ({ state }) => {
             </SaveButton>
           </ButtonWrapper>
         )}
-      </StHomeWrapper>
+      </StUploadWrapper>
 
       <Nav />
 
@@ -293,7 +297,7 @@ const PostUpload = ({ state }) => {
 
 export default PostUpload;
 
-const StHomeWrapper = styled.div`
+const StUploadWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -301,7 +305,7 @@ const StHomeWrapper = styled.div`
   text-align: center;
 
   padding: 2rem;
-  margin-bottom: 7rem;
+  padding-bottom: 7rem;
 
   gap: 1rem;
 `;
