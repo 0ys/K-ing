@@ -185,12 +185,17 @@ public class PostService {
                 ? cursorUtil.encodeCursor(List.of(posts.get(posts.size() - 1).getId()))
                 : null;
 
-        List<PostFeedResponseDto.Post> postDtos = posts.stream().map(post ->
-                PostFeedResponseDto.Post.builder()
+        List<PostFeedResponseDto.Post> postDtos = posts.stream().map(post -> {
+                    String imageUrl = postImageRepository.findByPostId(post.getId())
+                            .map(PostImage::getImageUrl)
+                            .orElse(null);
+
+                    return PostFeedResponseDto.Post.builder()
                         .postId(post.getId())
-                        .imageUrl(post.getPlace().getImageUrl())
+                        .imageUrl(imageUrl)
                         .isPublic(post.isPublic())
-                        .build()
+                        .build();
+                }
         ).toList();
 
         return new PostFeedResponseDto(postDtos, nextCursor);
@@ -330,21 +335,16 @@ public class PostService {
 
         postImageRepository.findByPostId(postId).ifPresent(postImage -> {
             String imageUrl = postImage.getImageUrl();
-            log.info("postService: 삭제할 imageUrl {}", imageUrl);
-            s3Service.deleteFile(imageUrl); // S3에서 이미지 삭제
+            s3Service.deleteFile(imageUrl);
             postImageRepository.delete(postImage);
-            log.info("postService: 이미지 삭제 완료");
         });
         
         likeRepository.deleteByPostId(postId);
         redisStringTemplate.delete("post:likes:" + postId);
         redisStringTemplate.opsForZSet().remove(POST_LIKES_KEY, postId.toString());
-        log.info("postService: 게시글의 좋아요 삭제 완료");
         
         commentRepository.deleteByPostId(postId);
-        log.info("postService: 게시글의 댓글 삭제 완료");
         
         postRepository.delete(post);
-        log.info("postService: 게시글 삭제 완료 - postId: {}", postId);
     }
 }

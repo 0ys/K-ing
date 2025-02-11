@@ -81,10 +81,8 @@ public class S3Service {
 
         if(entity instanceof Content){
             imageUrl = ((Content) entity).getImageUrl();
-            log.info("Content 테이블에 저장된 imageUrl: {}", imageUrl);
         } else if (entity instanceof Cast){
             imageUrl = ((Cast) entity).getImageUrl();
-            log.info("Cast 테이블에 저장된 imageUrl: {}", imageUrl);
         } else {
             throw new CustomException(S3ErrorCode.UNSUPPORTED_ENTITY_TYPE);
         }

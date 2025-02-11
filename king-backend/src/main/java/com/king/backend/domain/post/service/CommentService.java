@@ -95,10 +95,10 @@ public class CommentService {
 
         List<Comment> comments;
         if (sortValues == null) {
-            comments = commentRepository.findAllByPostOrderByIdDesc(post, PageRequest.of(0, size));
+            comments = commentRepository.findAllByPostOrderByIdAsc(post, PageRequest.of(0, size));
         } else {
             Long id = Long.parseLong(sortValues.get(0).toString());
-            comments = commentRepository.findAllByPostAndIdLessThanOrderByIdDesc(post, id, PageRequest.of(0, size));
+            comments = commentRepository.findAllByPostAndIdLessThanOrderByIdAsc(post, id, PageRequest.of(0, size));
         }
         String nextCursor = (comments.size() == size)
                 ? cursorUtil.encodeCursor(List.of(comments.get(comments.size() - 1).getId()))

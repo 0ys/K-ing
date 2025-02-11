@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CastController {
     private final CastService castService;
 
-    // 연예인 상세 조회
     @Operation(summary = "연예인 상세 조회 API")
     @GetMapping("/{castId}")
     public ResponseEntity<ApiResponse<CastDetailResponseDto>> getCastDetail(@PathVariable Long castId) {

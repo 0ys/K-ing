@@ -3,7 +3,10 @@ package com.king.backend.domain.post.entity;
 import com.king.backend.domain.place.entity.Place;
 import com.king.backend.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
