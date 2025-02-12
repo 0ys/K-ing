@@ -17,6 +17,9 @@ const Landing = () => {
   const handleMasterToken = () => {
     let accessToken = import.meta.env.VITE_MASTER_ACCESS_TOKEN;
     localStorage.setItem('accessToken', accessToken);
+    alert(
+      '다음의 실행 환경을 권장합니다.\n권장 테스트 환경 : PWA\n아이폰 : 공유 - 홈 화면에 추가\n안드로이드 : 우상단 메뉴 - 홈 화면에 추가',
+    );
     navigate('/home');
   };
 
@@ -31,15 +34,15 @@ const Landing = () => {
       </St.ContentWrapper>
 
       <St.ButtonWrapper>
-        <St.SocialButton onClick={handleMasterToken}>master login</St.SocialButton>
+        <St.SocialButton onClick={handleMasterToken}>Master login</St.SocialButton>
         <St.SocialButton $google onClick={googleLogin}>
           <img src={GoogleIcon} alt="구글 아이콘" />
           Continue with Google
         </St.SocialButton>
-        <St.SocialButton $line>
+        {/* <St.SocialButton $line>
           <img src={LineIcon} alt="라인 아이콘" />
           Continue with LINE
-        </St.SocialButton>
+        </St.SocialButton> */}
       </St.ButtonWrapper>
     </StLandingWrapper>
   );
@@ -102,7 +105,7 @@ const St = {
   SocialButton: styled.button`
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* 왼쪽 정렬 */
+    justify-content: center;
     gap: 10px;
     padding: 15px 20px; /* 왼쪽 여백 추가 */
     width: 100%;

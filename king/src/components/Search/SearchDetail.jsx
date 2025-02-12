@@ -34,7 +34,7 @@ const SearchDetail = () => {
   const { searchResultList, getNextData, isLoading, hasMore } = useGetSearchResult(
     searchQuery,
     searchCategory,
-    'createdAt',
+    '',
   );
 
   useEffect(() => {

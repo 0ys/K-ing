@@ -1,6 +1,6 @@
 import { constant } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
@@ -20,6 +20,7 @@ import BackButton from '../common/button/BackButton';
 import Loading from '../Loading/Loading';
 
 const CelebDetails = () => {
+  const location = useLocation();
   const { celebId } = useParams();
   const [celebInfo, setCelebInfo] = useState(null);
   const [isFavorited, setIsFavorited] = useState(false);
@@ -55,6 +56,12 @@ const CelebDetails = () => {
   };
 
   const handleGoBack = () => {
+    const from = location.state?.from?.pathname;
+
+    if (from && (from.includes('/archive') || from.includes('/favorites'))) {
+      navigate(-1);
+    }
+
     if (contentType === 'search') {
       navigate(`/search/result`);
     } else if (contentType === 'autocom') {

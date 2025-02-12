@@ -19,6 +19,12 @@ const AccountActions = () => {
 
   // 로그아웃 처리
   const handleLogout = async () => {
+    if (localStorage.getItem('accessToken') === import.meta.env.VITE_MASTER_ACCESS_TOKEN) {
+      localStorage.removeItem('accessToken');
+      window.location.replace('/');
+      return;
+    }
+
     const success = await logout();
     if (success) {
       localStorage.removeItem('accessToken');

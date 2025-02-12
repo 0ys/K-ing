@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
@@ -31,6 +31,7 @@ const ContentDetails = () => {
   const setContentId = useSetRecoilState(ContentId);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleClickCast = (celebId) => {
     navigate(`/content/cast/${celebId}`);
@@ -48,6 +49,12 @@ const ContentDetails = () => {
   };
 
   const handleGoBack = () => {
+    const from = location.state?.from?.pathname;
+
+    if (from && (from.includes('/archive') || from.includes('/favorites'))) {
+      navigate(-1);
+    }
+
     if (contentType === 'search') {
       navigate(`/search/result`);
     } else if (contentType === 'autocom') {

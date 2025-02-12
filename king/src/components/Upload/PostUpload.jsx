@@ -33,7 +33,7 @@ const PostUpload = ({ state }) => {
   const { postId } = useParams();
   const create = useModal();
   const upload = useModal();
-  const toggle = useToggle(false);
+  const toggle = useToggle(true);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();

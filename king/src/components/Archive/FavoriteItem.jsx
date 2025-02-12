@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { IcStar } from '../../assets/icons';
@@ -7,13 +7,18 @@ import { IcStarBlank } from '../../assets/icons';
 
 const FavoriteItem = ({ item, type }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const handleBookmarkClick = (event) => {
     event.stopPropagation(); // 부모 클릭 이벤트 방지
     console.log(`${type === 'works' ? item.title : item.name} 북마크 상태 변경`);
   };
   const handleClick = () => {
     const routeType = type === 'works' ? 'detail' : 'cast'; // '작품' -> detail, '인물' -> drama
-    navigate(`/content/${routeType}/${item.targetId}`);
+
+    navigate(`/content/${routeType}/${item.targetId}`, {
+      state: { from: { pathname: location.pathname } },
+    });
   };
 
   return (

@@ -16,11 +16,7 @@ const SearchResult = () => {
   const [searchQuery, setSearchQuery] = useRecoilState(SearchQueryState);
   const [searchCategory, setSearchCategory] = useRecoilState(SearchCategoryState);
 
-  const { searchResultList, isLoading } = useGetSearchResult(
-    searchQuery,
-    searchCategory,
-    'createdAt',
-  );
+  const { searchResultList, isLoading } = useGetSearchResult(searchQuery, searchCategory, '');
 
   const [contentList, setContentList] = useState([]);
   const [celebList, setCelebList] = useState([]);
