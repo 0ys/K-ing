@@ -32,6 +32,7 @@ const ProfileInfo = styled.div`
 `;
 
 const UserName = styled.span`
+  max-width: 17rem;
   ${({ theme }) => theme.fonts.Title6};
   color: ${({ theme }) => theme.colors.Gray0};
   margin-bottom: 0.5rem;

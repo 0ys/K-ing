@@ -68,11 +68,13 @@ const UserProfile = styled.div`
   width: 100%;
 
   p {
+    max-width: 22rem;
     ${({ theme }) => theme.fonts.Title6};
     color: ${({ theme }) => theme.colors.Gray1};
   }
 
   #date {
+    min-width: fit-content;
     ${({ theme }) => theme.fonts.Body6};
     color: ${({ theme }) => theme.colors.Gray2};
   }
@@ -94,7 +96,8 @@ const Caption = styled.div`
   justify-content: space-between;
 
   box-sizing: border-box;
-  padding: 0 4rem;
+  padding-left: 4rem;
+  margin-top: 0.5rem;
 
   width: 100%;
   p {

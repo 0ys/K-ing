@@ -25,6 +25,7 @@ const MapCurationPlaces = () => {
   const [placeId, setPlaceId] = useState(places.length > 0 ? places[0].placeId : null);
   const [placeData, setPlaceData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [nowActiveMarker, setNowActiveMarker] = useState(0);
 
   useEffect(() => {
     if (!placeId) return;
@@ -43,6 +44,7 @@ const MapCurationPlaces = () => {
 
   const handleMarkerClick = (placeId) => {
     setPlaceId(placeId);
+    setNowActiveMarker(placeId);
   };
 
   if (loading) return <Loading />;
@@ -51,12 +53,18 @@ const MapCurationPlaces = () => {
     <Container>
       {/* Map Section */}
       <MapSection>
-        <GoogleMapView places={places} isSearch={false} onMarkerClick={handleMarkerClick} />
+        <GoogleMapView
+          places={places}
+          isSearch={false}
+          onMarkerClick={handleMarkerClick}
+          $isExpanded={isExpanded}
+          nowActiveMarker={nowActiveMarker}
+        />
       </MapSection>
 
       {/* Content Section */}
       <ContentSection $isExpanded={isExpanded}>
-        <UpButton onClick={toggleBox}>
+        <UpButton onClick={toggleBox} $isExpanded={isExpanded}>
           <img src={UpIcon} />
         </UpButton>
 
@@ -104,7 +112,7 @@ const MapSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-bottom: 15rem;
+  padding-bottom: 16rem;
 `;
 
 const UpButton = styled.button`
@@ -118,6 +126,8 @@ const UpButton = styled.button`
   img {
     width: 6rem;
     height: 2rem;
+
+    transform: ${({ $isExpanded }) => ($isExpanded ? 'scaleY(-1)' : 'scaleY(1)')};
   }
 `;
 

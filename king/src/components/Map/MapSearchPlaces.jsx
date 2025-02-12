@@ -4,9 +4,13 @@ import styled from 'styled-components';
 
 import UpIcon from '../../assets/icons/up.png';
 import { searchMapView } from '../../lib/map';
+import { getPlaceDetail } from '../../lib/place';
 import { FilterOption, SearchQueryState, SearchRegionState } from '../../recoil/atom';
 import CloseButton from '../common/button/CloseButton';
 import Loading from '../Loading/Loading';
+import ContentsInfo from '../PlaceDetail/ContentsInfo';
+import FunctionButton from '../PlaceDetail/FunctionButton';
+import PlaceInfo from '../PlaceDetail/PlaceInfo';
 import FilterButtons from './FilterButtons';
 import GoogleMapView from './GoogleMapView';
 import ListItem from './ListItem';
@@ -17,7 +21,10 @@ const MapSearchPlaces = () => {
   const [filterOption, setFilterOption] = useRecoilState(FilterOption);
 
   const [isExpanded, setIsExpanded] = useState(false);
+  const [nowActiveMarker, setNowActiveMarker] = useState(0);
   const [places, setPlaces] = useState([]);
+  const [placeId, setPlaceId] = useState(0);
+  const [placeData, setPlaceData] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const filters = ['RESTAURANT', 'CAFE', 'PLAYGROUND', 'STORE', 'STAY'];
@@ -34,6 +41,20 @@ const MapSearchPlaces = () => {
 
     fetchPlaces();
   }, [query, region]);
+
+  useEffect(() => {
+    if (placeId == 0) {
+      setPlaceData(null);
+      return;
+    }
+
+    const fetchPlaceData = async () => {
+      const result = await getPlaceDetail(placeId);
+      setPlaceData(result);
+    };
+
+    fetchPlaceData();
+  }, [placeId]);
 
   const toggleBox = () => {
     setIsExpanded(!isExpanded);
@@ -66,9 +87,19 @@ const MapSearchPlaces = () => {
     if (Object.values(filterOption.categories).every((value) => !value)) return true;
     return filterOption.categories[place.type];
   });
+
+  const handleMarkerClick = async (activePlace) => {
+    setPlaceId(activePlace);
+  };
+
+  const handleFocusMarker = (placeId) => {
+    setIsExpanded(false);
+    setNowActiveMarker(placeId);
+  };
+
   // console.log('마커 개수:', places.length);
   // const filteredPlaces = places.slice(0, 6000); // limit
-  // console.log('필터 마커커 개수:', filteredPlaces.length);
+  // console.log('필터 마커 개수:', filteredPlaces.length);
 
   if (loading) return <Loading />;
 
@@ -76,32 +107,54 @@ const MapSearchPlaces = () => {
     <Container>
       {/* Map Section */}
       <MapSection>
-        <GoogleMapView places={filteredPlaces} isSearch={true} />
+        <GoogleMapView
+          places={filteredPlaces}
+          isSearch={true}
+          onMarkerClick={handleMarkerClick}
+          nowActiveMarker={nowActiveMarker}
+          $isExpanded={isExpanded}
+        />
       </MapSection>
 
       {/* Content Section */}
-      <ContentSection $isExpanded={isExpanded}>
-        <UpButton onClick={toggleBox}>
+      <ContentSection $isExpanded={isExpanded} $isPlaceInfo={placeId !== 0}>
+        <UpButton onClick={toggleBox} $isExpanded={isExpanded}>
           <img src={UpIcon} />
         </UpButton>
+        {placeData ? (
+          <div style={{ padding: '0 2rem' }}>
+            <Title>{placeData.name}</Title>
+            {placeData.imageUrl && <Image src={placeData.imageUrl} alt={placeData.name} />}
 
-        <FilterContainer>
-          <FilterButtons
-            filters={filters}
-            activeFilter={filterOption.categories}
-            onFilterChange={handleFilterChange}
-          />
-        </FilterContainer>
-        {filteredPlaces.length > 0 ? (
-          <ListContainer>
-            {filteredPlaces.map((place) => (
-              <ListItem key={place.placeId} place={place} />
+            {placeData.relatedContents?.map((info) => (
+              <ContentsInfo key={info.contentId} info={info} />
             ))}
-          </ListContainer>
+
+            <FunctionButton dest={placeData} />
+
+            <PlaceInfo placeData={placeData} />
+          </div>
         ) : (
-          <NoResultsContainer>
-            <NoResultsText>검색 결과가 없습니다.</NoResultsText>
-          </NoResultsContainer>
+          <>
+            <FilterContainer>
+              <FilterButtons
+                filters={filters}
+                activeFilter={filterOption.categories}
+                onFilterChange={handleFilterChange}
+              />
+            </FilterContainer>
+            {filteredPlaces.length > 0 ? (
+              <ListContainer>
+                {filteredPlaces.map((place) => (
+                  <ListItem key={place.placeId} place={place} handleFocus={handleFocusMarker} />
+                ))}
+              </ListContainer>
+            ) : (
+              <NoResultsContainer>
+                <NoResultsText>검색 결과가 없습니다.</NoResultsText>
+              </NoResultsContainer>
+            )}
+          </>
         )}
       </ContentSection>
 
@@ -123,7 +176,7 @@ const MapSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-bottom: 15rem;
+  /* padding-bottom: 15rem; */
 `;
 
 const UpButton = styled.button`
@@ -138,6 +191,8 @@ const UpButton = styled.button`
   img {
     width: 6rem;
     height: 2rem;
+
+    transform: ${({ $isExpanded }) => ($isExpanded ? 'scaleY(-1)' : 'scaleY(1)')};
   }
 `;
 
@@ -154,13 +209,49 @@ const ContentSection = styled.div`
   background-color: #ffffff;
   height: 100%;
   position: absolute;
-  ${(props) => (props.$isExpanded ? 'top: 8rem;' : 'top: calc(100vh - 18rem);')}
+  bottom: -15rem;
+  /* ${(props) =>
+    props.$isExpanded
+      ? 'bottom: -15rem;'
+      : props.$isPlaceInfo
+        ? 'top: calc(100vh - 30rem);'
+        : 'bottom:-15rem;'} */
+
+  height: ${(props) =>
+    props.$isExpanded
+      ? props.$isPlaceInfo
+        ? 'fit-content'
+        : '60rem'
+      : props.$isPlaceInfo
+        ? '29rem'
+        : '17rem'};
+
   left: 0;
   right: 0;
   transition: bottom 0.3s ease;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   z-index: 501;
+`;
+
+const Title = styled.div`
+  ${({ theme }) => theme.fonts.Title3};
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const Image = styled.img`
+  width: 100%;
+  height: 20rem;
+  border-radius: 8px;
+  margin: 1rem 0rem 2rem 0rem;
+  object-fit: cover;
+  display: block;
 `;
 
 const ListContainer = styled.div`

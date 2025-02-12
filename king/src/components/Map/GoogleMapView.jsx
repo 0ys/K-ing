@@ -59,7 +59,7 @@ const markerImages = {
   },
 };
 
-const GoogleMapView = ({ places, isSearch, onMarkerClick }) => {
+const GoogleMapView = ({ places, isSearch, nowActiveMarker, onMarkerClick, $isExpanded }) => {
   const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
   const [mapInstance, setMapInstance] = useState(null);
   const [markers, setMarkers] = useState([]);
@@ -142,15 +142,39 @@ const GoogleMapView = ({ places, isSearch, onMarkerClick }) => {
       setPreventFitBounds(true);
       setActivePlaceId(place.placeId);
 
-      map.setCenter({ lat: place.lat, lng: place.lng });
-      map.setZoom(16);
-
       if (onMarkerClick) {
         onMarkerClick(place.placeId);
       }
+
+      setTimeout(() => {
+        map.setCenter({ lat: place.lat, lng: place.lng });
+        map.setZoom(16);
+      }, 100);
     },
-    [onMarkerClick],
+    [onMarkerClick, activePlaceId],
   );
+
+  useEffect(() => {
+    if (mapInstance && nowActiveMarker !== 0) {
+      const activePlace = places.find((place) => place.placeId === nowActiveMarker);
+      if (activePlace) {
+        handleMarkerClick(mapInstance, activePlace);
+      }
+    }
+  }, [nowActiveMarker, mapInstance, places, handleMarkerClick]);
+
+  useEffect(() => {
+    if (mapInstance) {
+      const clickListener = mapInstance.addListener('click', () => {
+        if (activePlaceId) {
+          setActivePlaceId(null);
+          onMarkerClick(0);
+        }
+      });
+
+      return () => google.maps.event.removeListener(clickListener);
+    }
+  }, [mapInstance, activePlaceId, setActivePlaceId]);
 
   // Reset preventFitBounds after map or places update
   useEffect(() => {
@@ -279,17 +303,20 @@ const GoogleMapView = ({ places, isSearch, onMarkerClick }) => {
         onLoad={handleMapLoad}
         onIdle={handleIdle} // 지도 이동 후 이벤트
       />
+      {!$isExpanded && (
+        <>
+          {/* 현재 위치 버튼 */}
+          <HereButton onClick={moveToCurrentLocation} $isMarkerFocus={activePlaceId}>
+            <img src={HereIcon} alt="here" />
+          </HereButton>
 
-      {/* 현재 위치 버튼 */}
-      <HereButton onClick={moveToCurrentLocation}>
-        <img src={HereIcon} alt="here" />
-      </HereButton>
-
-      {/* 이 지역에서 다시 검색 */}
-      {showSearchButton && (
-        <SearchButton onClick={handleSearch}>
-          <img src={RefreshIcon} alt="here" />이 지역에서 검색
-        </SearchButton>
+          {/* 이 지역에서 다시 검색 */}
+          {showSearchButton && (
+            <SearchButton onClick={handleSearch} $isMarkerFocus={activePlaceId}>
+              <img src={RefreshIcon} alt="here" />이 지역에서 검색
+            </SearchButton>
+          )}
+        </>
       )}
     </GoogleMapContainer>
   );
@@ -320,7 +347,7 @@ const GoogleMapContainer = styled.div`
 
 const HereButton = styled.button`
   position: absolute;
-  bottom: 4rem;
+  bottom: ${({ $isMarkerFocus }) => ($isMarkerFocus ? '16rem' : '4rem')};
   right: 2rem;
   background-color: #fff;
   color: white;
@@ -348,7 +375,7 @@ const HereButton = styled.button`
 
 const SearchButton = styled.button`
   position: absolute;
-  bottom: 4.5rem;
+  bottom: ${({ $isMarkerFocus }) => ($isMarkerFocus ? '16.5rem' : '4.5rem')};
   left: 50%;
   transform: translateX(-50%);
   background-color: #ffffff;

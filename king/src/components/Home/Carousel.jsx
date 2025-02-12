@@ -64,7 +64,6 @@ const StyledSlider = styled(Slider)`
     display: flex;
     align-items: center;
     height: 100%;
-    /* width: 100% !important; */
   }
 
   .slick-slide {
@@ -77,6 +76,7 @@ const StyledSlider = styled(Slider)`
 const CarouselItem = styled.div`
   position: relative;
   width: 100%;
+  min-width: 29.5rem;
   height: 18rem;
   flex-shrink: 0;
 
@@ -108,5 +108,13 @@ const CarouselItem = styled.div`
     padding: 0.5rem 1rem;
     ${({ theme }) => theme.fonts.Title6};
     z-index: 2;
+  }
+
+  @media (min-width: 375px) {
+    min-width: 393px;
+  }
+
+  @media (max-width: 400px) {
+    min-width: 330px;
   }
 `;

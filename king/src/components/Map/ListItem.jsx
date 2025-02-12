@@ -8,17 +8,12 @@ import GoodIcon from '../../assets/icons/good.png';
 import LocationIcon from '../../assets/icons/location.png';
 import { getShortAddress } from '../../util/addressFormat';
 
-const ListItem = ({ place }) => {
-  const navigate = useNavigate();
-  const handleRoute = () => {
-    navigate(`/place/${placeId}`); // 상세 페이지로 이동
-  };
-
+const ListItem = ({ place, handleFocus }) => {
   const { placeId, name, type, address, openHour, closedDay, imageUrl } = place;
   const isAlwaysOpen = closedDay === '연중무휴'; // 연중무휴 여부 확인
 
   return (
-    <ItemContainer onClick={handleRoute}>
+    <ItemContainer onClick={() => handleFocus(placeId)}>
       <TitleRow>
         <Title>{name}</Title>
         <Desc>{type}</Desc>
@@ -56,7 +51,7 @@ const ListItem = ({ place }) => {
 };
 
 const ItemContainer = styled.div`
-  padding: 25px;
+  padding: 2.2rem;
   display: flex;
   flex-direction: column;
   background-color: #fff;

@@ -68,6 +68,15 @@ const St = {
     color: ${({ theme }) => theme.colors.Gray1};
   `,
   Author: styled.p`
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2rem;
+    max-height: 2.4em;
+    white-space: normal;
+
     ${({ theme }) => theme.fonts.Title7};
     color: #464656;
   `,
@@ -82,6 +91,7 @@ const St = {
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 1.2em;
+    min-height: 2.4rem;
     max-height: 2.4em;
     white-space: normal;
   `,

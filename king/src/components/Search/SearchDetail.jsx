@@ -121,11 +121,12 @@ const St = {
   `,
 
   List: styled.div`
+    width: 100%;
+
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
     overflow-y: auto;
-    padding: 0 1rem;
 
     &::-webkit-scrollbar {
       display: none;

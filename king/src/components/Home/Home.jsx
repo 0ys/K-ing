@@ -136,12 +136,19 @@ const CurationHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   & > h3 {
+    max-width: 20rem;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
     text-align: left;
     ${({ theme }) => theme.fonts.Title4};
     margin: 1rem 0;
   }
   span {
     cursor: pointer;
+    min-width: fit-content;
 
     ${({ theme }) => theme.fonts.Body4};
   }
