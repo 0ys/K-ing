@@ -85,7 +85,13 @@ const ActiveUserTabState = atom({
   default: 'posts', // 기본값은 'posts'
 });
 
+const ActiveArchiveTabState = atom({
+  key: 'activeArchiveTabState',
+  default: 'Curations',
+});
+
 export {
+  ActiveArchiveTabState,
   ActiveUserTabState,
   ContentId,
   ContentType,

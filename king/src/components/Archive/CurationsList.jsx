@@ -1,48 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { getBookmarkStatus, removeBookmark } from '../../lib/bookmark';
+// import { getBookmarkStatus, removeBookmark } from '../../lib/bookmark';
+import { getCurations } from '../../lib/bookmark';
 import CurationItem from './CurationItem';
+
 const CurationsList = ({ data }) => {
-  // BE 연결 후 테스트 필요
-  // const [curationsList, setCurationsList] = useState(data); // 북마크된 리스트 관리
+  const [curations, setCurations] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   // ✅ 북마크 상태 불러와서 업데이트
-  //   const fetchBookmarks = async () => {
-  //     const updatedList = await Promise.all(
-  //       data.map(async (item) => {
-  //         const isBookmarked = await getBookmarkStatus(item.id);
-  //         return { ...item, bookmarked: isBookmarked };
-  //       }),
-  //     );
-  //     setCurationsList(updatedList);
-  //   };
+  useEffect(() => {
+    const fetchCurations = async () => {
+      setLoading(true);
+      const curationsData = await getCurations(); // ✅ bookmark.js에서 불러옴
+      setCurations(curationsData);
+      setLoading(false);
+    };
 
-  //   fetchBookmarks();
-  // }, [data]);
-
-  // // ✅ 북마크 해제 후 리스트에서 제거
-  // const handleRemoveBookmark = async (id) => {
-  //   const success = await removeBookmark(id);
-  //   if (success) {
-  //     setCurationsList((prev) => prev.filter((item) => item.id !== id)); // 해당 아이템 제거
-  //   }
-  // };
+    fetchCurations();
+  }, []);
 
   return (
     <StCurationList>
-      {data.map((item) => (
-        <CurationItem key={item.id} item={item} />
-      ))}
+      {loading ? (
+        <StLoadingMessage>큐레이션 데이터를 불러오는 중...</StLoadingMessage>
+      ) : curations.length > 0 ? (
+        curations.map((item) => <CurationItem key={item.curationId} item={item} />)
+      ) : (
+        <StNoDataMessage>등록된 큐레이션이 없습니다.</StNoDataMessage>
+      )}
     </StCurationList>
-
-    // BE 연결 후 테스트 필요
-    // <StCurationList>
-    //   {curationsList.map((item) => (
-    //     <CurationItem key={item.id} item={item} onRemoveBookmark={handleRemoveBookmark} />
-    //   ))}
-    // </StCurationList>
   );
 };
 
@@ -54,4 +41,23 @@ const StCurationList = styled.div`
   gap: 0.1rem;
   width: 100%;
   overflow-y: auto;
+
+  /* 스크롤바를 보이지 않게 설정 */
+  &::-webkit-scrollbar {
+    display: none; /* 크롬, 사파리 등 Webkit 기반 브라우저 */
+  }
+
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE, Edge */
+`;
+const StLoadingMessage = styled.div`
+  text-align: center;
+  padding: 2rem;
+  color: ${({ theme }) => theme.colors.Gray2};
+`;
+
+const StNoDataMessage = styled.div`
+  text-align: center;
+  padding: 2rem;
+  color: ${({ theme }) => theme.colors.Gray2};
 `;

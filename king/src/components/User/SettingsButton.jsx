@@ -22,11 +22,10 @@ export default SettingsButton;
 
 const Button = styled.button`
   position: absolute; /* ✅ ProfileHeaderWrapper 내부에서 우측 상단 배치 */
-  top: 1rem;
-  right: 1rem;
+  top: 1.8rem;
+  right: 0.9rem;
   background: none;
   border: none;
-  font-size: 2rem;
   cursor: pointer;
   z-index: 10;
 `;

@@ -28,6 +28,7 @@ const StProfileHeader = styled.div`
   width: 100%;
   box-sizing: border-box;
   position: relative;
+  margin-top: 1.5rem;
 `;
 
 const St = {
@@ -41,11 +42,13 @@ const St = {
     height: 6rem;
     border-radius: 50%;
     object-fit: cover;
+    margin-bottom: 2.5rem;
   `,
 
   ProfileInfo: styled.div`
     display: flex;
     flex-direction: column;
+    width: 70%;
   `,
 
   Nickname: styled.h2`
@@ -59,7 +62,6 @@ const St = {
   `,
 
   DescriptionWrapper: styled.div`
-    margin-top: 1rem;
     max-width: 100%;
   `,
 

@@ -73,26 +73,26 @@ const ProfileContainer = styled.div`
   width: 100%;
   max-width: 60rem;
   margin: 0 auto;
-  padding: 2rem;
   box-sizing: border-box;
   position: relative;
 `;
 
 const ProfileHeaderWrapper = styled.div`
   display: flex;
-  justify-content: space-between; /* ✅ 좌우 정렬 */
-  align-items: center; /* ✅ 세로 중앙 정렬 */
+  justify-content: space-between; /* 좌우 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
   width: 100%;
   position: relative;
   box-sizing: border-box;
-  padding: 2rem;
+  padding: 1rem 2rem;
 `;
-// ✅ 유저 정보를 불러오지 못했을 때의 스타일
+// 유저 정보를 불러오지 못했을 때의 스타일
 const ErrorContainer = styled.div`
   text-align: center;
   margin-top: 2rem;
 `;
 
+// 고치기!!! common으로 빼기??
 const RefreshButton = styled.button`
   margin-top: 1rem;
   padding: 0.8rem 1.5rem;

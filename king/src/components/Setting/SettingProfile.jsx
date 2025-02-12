@@ -223,8 +223,22 @@ const SettingProfile = () => {
           <St.Input
             type="text"
             value={newNickname}
-            onChange={(e) => setNewNickname(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value.length <= 50) {
+                setNewNickname(value);
+              }
+            }}
+            onPaste={(e) => {
+              const pasteData = e.clipboardData.getData('text');
+              if (pasteData.length > 50) {
+                e.preventDefault();
+              }
+            }}
+            maxLength={50}
           />
+
+          <St.Counter>{newNickname.length} / 50</St.Counter>
           <St.StatusMessageWrapper>
             {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
             {isValidName && isNameAvailable && (
@@ -344,6 +358,9 @@ const St = {
       background-color: ${({ theme }) => theme.colors.Gray3};
       cursor: not-allowed;
     }
+  `,
+  NicknameStateWrapper: styled.div`
+    display: flex;
   `,
 };
 

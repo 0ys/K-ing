@@ -5,9 +5,18 @@ import styled from 'styled-components';
 
 import { IcBookmarkBlank } from '../../assets/icons';
 import { IcBookmarkFill } from '../../assets/icons';
+import { IcLock } from '../../assets/icons';
 
+// comment : 아카이브 큐레이션에서 코드를 재활용하고 난 뒤에 북마크 관련된 불필요한 내용 삭제 예정입니다
 const CurationItem = forwardRef(({ item }, ref) => {
-  const { curationId, title, imageUrl, writerNickname, bookmarked: initialBookmarked } = item; // 초기 bookmarked 값 가져오기
+  const {
+    curationId,
+    title,
+    imageUrl,
+    writerNickname,
+    public: isPublic,
+    bookmarked: initialBookmarked,
+  } = item; // 초기 bookmarked 값 가져오기
   const [bookmarked, setBookmarked] = useState(initialBookmarked); // 초기 상태를 item.bookmarked로 설정
   const navigate = useNavigate();
 
@@ -20,16 +29,24 @@ const CurationItem = forwardRef(({ item }, ref) => {
     navigate(`/curation/${curationId}`);
   };
 
+  const truncateText = (text, maxLength) => {
+    return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+  };
+
   return (
     <StCurationItemWrapper ref={ref} onClick={handleCurationClick}>
       <St.Image src={imageUrl} alt={title} />
       <St.Info>
-        <St.Author>@{writerNickname}</St.Author>
-        <St.Title>{title}</St.Title>
+        <St.Title>{truncateText(title, 20)}</St.Title>
       </St.Info>
-      <St.BookmarkButton onClick={handleBookmarkClick}>
-        {bookmarked ? <IcBookmarkFill /> : <IcBookmarkBlank />} {/* 상태에 따라 아이콘 변경 */}
-      </St.BookmarkButton>
+      {!isPublic && (
+        <St.LockIcon>
+          <IcLock />
+        </St.LockIcon>
+      )}
+      {/* <St.BookmarkButton onClick={handleBookmarkClick}>
+        {bookmarked ? <IcBookmarkFill /> : <IcBookmarkBlank />}
+      </St.BookmarkButton> */}
     </StCurationItemWrapper>
   );
 });
@@ -81,6 +98,7 @@ const St = {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 100%;
   `,
   BookmarkButton: styled.button`
     position: absolute;
@@ -95,5 +113,13 @@ const St = {
     &:hover {
       color: ${({ theme }) => theme.colors.Gray1};
     }
+  `,
+  LockIcon: styled.div`
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 5px;
+    border-radius: 50%;
   `,
 };

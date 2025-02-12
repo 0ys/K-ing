@@ -42,6 +42,7 @@ const GridContainer = styled.div`
   grid-template-columns: repeat(3, 1fr);
   width: 100%;
   box-sizing: border-box;
+  margin-bottom: 8rem;
 `;
 
 const EmptyMessage = styled.p`

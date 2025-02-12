@@ -6,7 +6,7 @@ import { IcBookmarkBlank } from '../../assets/icons';
 import { IcBookmarkFill } from '../../assets/icons';
 
 const CurationItem = ({ item }) => {
-  const { id, title, imageUrl, writerNickname, bookmarked: initialBookmarked } = item; // 초기 bookmarked 값 가져오기
+  const { curationId, title, imageUrl, writerNickname, bookmarked: initialBookmarked } = item; // 초기 bookmarked 값 가져오기
   const [bookmarked, setBookmarked] = useState(initialBookmarked); // 초기 상태를 item.bookmarked로 설정
   const navigate = useNavigate();
 
@@ -16,29 +16,19 @@ const CurationItem = ({ item }) => {
   };
 
   const handleCurationClick = () => {
-    navigate(`/curation/${id}`);
+    navigate(`/curation/${curationId}`);
   };
 
-  // BE 연결 후 테스트 필요
-  // const CurationItem = ({ item, onRemoveBookmark }) => {
-  //   const { id, title, image, author, bookmarked } = item;
-  //   const navigate = useNavigate();
-
-  //   const handleBookmarkClick = (event) => {
-  //     event.stopPropagation();
-  //     onRemoveBookmark(id); // ✅ 부모 컴포넌트에서 북마크 해제 처리
-  //   };
-
-  //   const handleCurationClick = () => {
-  //     navigate(`/curation/${id}`);
-  //   };
+  const truncateText = (text, maxLength) => {
+    return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+  };
 
   return (
     <StCurationItemWrapper onClick={handleCurationClick}>
       <St.Image src={imageUrl} alt={title} />
       <St.Info>
-        <St.Author>@{writerNickname}</St.Author>
-        <St.Title>{title}</St.Title>
+        <St.Author>@{truncateText(writerNickname, 20)}</St.Author>
+        <St.Title>{truncateText(title, 20)}</St.Title>
       </St.Info>
       <St.BookmarkButton onClick={handleBookmarkClick}>
         {bookmarked ? <IcBookmarkFill /> : <IcBookmarkBlank />} {/* 상태에 따라 아이콘 변경 */}

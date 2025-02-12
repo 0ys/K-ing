@@ -40,10 +40,9 @@ export default CurationsList;
 const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* 2열 그리드 */
-  gap: 0.8rem;
   width: 100%;
-  padding: 1.6rem;
   box-sizing: border-box;
+  margin-bottom: 8rem;
 `;
 
 const EmptyMessage = styled.p`

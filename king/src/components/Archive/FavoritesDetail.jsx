@@ -1,28 +1,38 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import {
-  FavoritePeopleDummyData,
-  FavoriteWorksDummyData,
-} from '../../assets/dummy/dummyDataArchive';
+import { getFavorites } from '../../lib/favorites';
 import BackButton from '../common/button/BackButton';
 import FavoriteItem from './FavoriteItem';
 
 const FavoritesDetail = () => {
-  const { type } = useParams();
+  const { type } = useParams(); // "works" 또는 "people"
   const navigate = useNavigate();
 
+  const [favoritesData, setFavoritesData] = useState([]);
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
+
   const handleBackClick = () => {
-    // 뒤로가기 시 activeTab을 Favorites로 설정
-    navigate('/archive', { state: { activeTab: 'Favorites' } });
+    navigate('/archive');
   };
 
-  const [favoriteWorksData] = useState(FavoriteWorksDummyData);
-  const [favoritePeopleData] = useState(FavoritePeopleDummyData);
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      setLoading(true);
+      const apiType = type === 'works' ? 'content' : 'cast'; // 백엔드 API에 맞게 변환
+      const data = await getFavorites(apiType);
+      setFavoritesData(data);
+      setLoading(false);
+    };
 
-  const data = type === 'works' ? favoriteWorksData : favoritePeopleData;
+    fetchFavorites();
+  }, [type]); // type이 변경될 때마다 API 호출
+
+  if (loading) {
+    return <St.LoadingMessage>데이터를 불러오는 중...</St.LoadingMessage>;
+  }
 
   return (
     <StFavoritesDetailWrapper>
@@ -34,9 +44,15 @@ const FavoritesDetail = () => {
         </St.Title>
       </St.FixedContainer>
       <St.List>
-        {data.map((item) => (
-          <FavoriteItem key={item.id} item={item} type={type} />
-        ))}
+        {favoritesData.length > 0 ? (
+          favoritesData.map((item) => (
+            <FavoriteItem key={item.favoriteId} item={item} type={type} />
+          ))
+        ) : (
+          <St.NoDataMessage>
+            아직 즐겨찾기한 {type === 'works' ? '작품' : '인물'}이 없어요.
+          </St.NoDataMessage>
+        )}
       </St.List>
     </StFavoritesDetailWrapper>
   );
@@ -90,5 +106,17 @@ const St = {
     &::-webkit-scrollbar {
       display: none;
     }
+  `,
+  NoDataMessage: styled.div`
+    text-align: center;
+    color: ${({ theme }) => theme.colors.Gray2};
+    ${({ theme }) => theme.fonts.Body5};
+    padding: 2rem;
+  `,
+  LoadingMessage: styled.div`
+    text-align: center;
+    padding: 2rem;
+    color: ${({ theme }) => theme.colors.Gray2};
+    ${({ theme }) => theme.fonts.Body5};
   `,
 };

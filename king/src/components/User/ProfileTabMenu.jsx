@@ -23,9 +23,9 @@ const ProfileTabMenu = ({ activeTab, onTabChange }) => {
       ].map((tab) => {
         const isActive = activeTab === tab.id;
         return (
-          <St.TabButton key={tab.id} isActive={isActive} onClick={() => onTabChange(tab.id)}>
+          <St.TabButton key={tab.id} $isActive={isActive} onClick={() => onTabChange(tab.id)}>
             <St.IconWrapper>{isActive ? tab.activeIcon : tab.inactiveIcon}</St.IconWrapper>
-            <St.Label>{tab.label}</St.Label>
+            <St.Label $isActive={isActive}>{tab.label}</St.Label>
           </St.TabButton>
         );
       })}
@@ -41,8 +41,7 @@ const St = {
     position: relative;
     display: flex;
     justify-content: space-between;
-    border-bottom: 0.2rem solid ${({ theme }) => theme.colors.Gray2 || '#ddd'};
-    margin-top: 1rem;
+    border-bottom: 0.2rem solid ${({ theme }) => theme.colors.Gray2};
   `,
   TabButton: styled.button.withConfig({
     shouldForwardProp: (prop) => prop !== 'isActive',
@@ -56,11 +55,9 @@ const St = {
     background: none;
     cursor: pointer;
     text-align: center;
-    font-size: 1.6rem;
 
-    font-weight: ${({ isActive }) => (isActive ? 'bold' : 'normal')};
-    color: ${({ theme, isActive }) =>
-      isActive ? theme.colors.Gray0 || '#000' : theme.colors.Gray3 || '#aaa'};
+    font-weight: ${({ $isActive }) => ($isActive ? 'bold' : 'normal')};
+    color: ${({ theme, $isActive }) => ($isActive ? theme.colors.Gray0 : theme.colors.Gray3)};
   `,
   IconWrapper: styled.div`
     display: flex;
@@ -73,7 +70,8 @@ const St = {
     }
   `,
   Label: styled.span`
-    font-size: 1.4rem;
+    ${({ theme }) => theme.fonts.Body3};
+    font-weight: ${({ $isActive }) => ($isActive ? 'bold' : 'normal')};
   `,
   Slider: styled.div.withConfig({
     shouldForwardProp: (prop) => prop !== 'activeIndex',
@@ -82,8 +80,10 @@ const St = {
     bottom: 0;
     height: 0.3rem;
     width: 50%;
-    background-color: ${({ theme }) => theme.colors.Gray0 || '#000'};
+    background-color: ${({ theme }) => theme.colors.Gray0};
     transition: transform 0.3s ease;
-    transform: translateX(${({ activeIndex }) => activeIndex * 100}%);
+    transform: translateX(${({ activeIndex }) => activeIndex * 100}%) translateY(50%);
+    border-radius: 10rem;
+    z-index: 2;
   `,
 };
