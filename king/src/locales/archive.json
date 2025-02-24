@@ -1,0 +1,62 @@
+{
+  "ko": {
+    "works": "작품",
+    "people": "인물",
+    "unit_item": "개",
+    "unit_person": "명",
+    "showAll": "{type} 전체보기",
+    "showAllSimple": "전체보기",
+    "noFavorites": "아직 즐겨찾기한 {type}이 없어요.",
+    "itemsCount": "{countDisplay}{unit}의 {type}",
+    "noCurations": "등록된 큐레이션이 없습니다.",
+    "noSearchResults": "검색 결과가 없습니다.",
+    "drama": "드라마",
+    "movie": "영화",
+    "show": "예능"
+  },
+  "en": {
+    "works": "Works",
+    "people": "People",
+    "unit_item": "",
+    "unit_person": "",
+    "showAll": "Show All {type}",
+    "showAllSimple": "Show All",
+    "noFavorites": "You haven't favorited any {type} yet.",
+    "itemsCount": "{countDisplay} {type}",
+    "noCurations": "No curations available.",
+    "noSearchResults": "No search results found.",
+    "drama": "Drama",
+    "movie": "Movie",
+    "show": "Show"
+  },
+  "ja": {
+    "works": "作品",
+    "people": "人物",
+    "unit_item": "個",
+    "unit_person": "人",
+    "showAll": "{type}をすべて表示",
+    "showAllSimple": "すべて表示",
+    "noFavorites": "まだお気に入りの {type} がありません。",
+    "itemsCount": "{countDisplay}{unit}の{type}",
+    "noCurations": "登録されたキュレーションがありません。",
+    "noSearchResults": "検索結果がありません。",
+    "drama": "ドラマ",
+    "movie": "映画",
+    "show": "バラエティ"
+  },
+  "zh": {
+    "works": "作品",
+    "people": "人物",
+    "unit_item": "個",
+    "unit_person": "人",
+    "showAll": "查看全部 {type}",
+    "showAllSimple": "查看全部",
+    "noFavorites": "你還沒有收藏任何{type}。",
+    "itemsCount": "{countDisplay}{unit}{type}",
+    "noCurations": "沒有可用的策展內容。",
+    "noSearchResults": "沒有搜尋結果。",
+    "drama": "電視劇",
+    "movie": "電影",
+    "show": "綜藝"
+  }
+}

@@ -1,0 +1,98 @@
+client:
+  url: ${CLIENT_BASE_URL}
+spring:
+  application:
+    name: king-backend
+  config:
+    import: optional:file:.env[.properties]
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: gpt-4o-mini
+          temperature: 0.7
+  translate:
+    google-translate-key: ${GOOGLE_TRANSLATE_KEY}
+  place:
+    google-api-key: ${GOOGLE_PLACE_API_KEY}
+  jwt:
+    secret: ${JWT_SECRET}
+    accesstoken-expires-in: ${ACCESSTOKEN_EXPIRES_IN}
+    refreshtoken-expires-in: ${REFRESHTOKEN_EXPIRES_IN}
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-name: google
+            client-id: ${OAUTH2_GOOGLE_CLIENT_ID}
+            client-secret: ${OAUTH2_GOOGLE_CLIENT_SECRET}
+            redirect-uri: ${SERVER_BASE_URL}/login/oauth2/code/google
+            authorization-grant-type: authorization_code
+            scope: email, profile
+          line:
+            client-name: line
+            client-id: ${OAUTH2_LINE_CLIENT_ID}
+            client-secret: ${OAUTH2_LINE_CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            redirect-uri: ${SERVER_BASE_URL}/login/oauth2/code/line
+            scope: openid, email, profile
+        provider:
+          line:
+            issuer-uri: https://access.line.me
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DB}?serverTimezone=UTC
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    open-in-view: false #  추가
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+      timeout: 2000
+    elasticsearch:
+      repositories:
+        enabled: true
+  elasticsearch:
+    uris: ${ELASTIC_HOST}:${ELASTIC_PORT}
+    username: ${ELASTIC_USERNAME}
+    password: ${ELASTIC_PASSWORD}
+  aws:
+    access-key: ${AWS_ACCESS_KEY}
+    secret-key: ${AWS_SECRET_KEY}
+    region: ${AWS_REGION}
+    s3-bucket: ${AWS_S3_BUCKET}
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+fcm:
+  service-account-file: ${FIREBASE_SERVICE_ACCOUNT_FILE}
+server:
+  url: ${SERVER_BASE_URL}
+  port: 8080
+  forward-headers-strategy: framework
+  servlet:
+    context-path: /api
+    encoding:
+      force-response: true
+
+logging:
+  level:
+    root: info
+    org.springframework: warn
+    org.springframework.security: debug
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus"

@@ -1,0 +1,58 @@
+{
+  "ko": {
+    "search": "이 지역에서 검색",
+    "restaurant": "식당",
+    "cafe": "카페",
+    "playground": "관광",
+    "store": "상점",
+    "stay": "숙박",
+    "content": "관련 작품",
+    "showMore": "더보기",
+    "collapse": "접기",
+    "noplace": "장소 정보를 불러올 수 없습니다.",
+    "noresult": "검색 결과가 없습니다.",
+    "nocontent": "관련 작품이 없습니다."
+  },
+  "en": {
+    "search": "Search in this area",
+    "restaurant": "Restaurant",
+    "cafe": "Cafe",
+    "playground": "Tourist Spot",
+    "store": "Store",
+    "stay": "Accommodation",
+    "content": "Related Content",
+    "showMore": "Show More",
+    "collapse": "Collapse",
+    "noplace": "Unable to load place information.",
+    "noresult": "No search results found.",
+    "nocontent": "No related content available."
+  },
+  "ja": {
+    "search": "このエリアで検索",
+    "restaurant": "レストラン",
+    "cafe": "カフェ",
+    "playground": "観光",
+    "store": "ショップ",
+    "stay": "宿泊",
+    "content": "関連作品",
+    "showMore": "もっと見る",
+    "collapse": "閉じる",
+    "noplace": "場所情報を読み込めません。",
+    "noresult": "検索結果がありません。",
+    "nocontent": "関連作品がありません。"
+  },
+  "zh": {
+    "search": "在此區域搜尋",
+    "restaurant": "餐廳",
+    "cafe": "咖啡廳",
+    "playground": "觀光",
+    "store": "商店",
+    "stay": "住宿",
+    "content": "相關作品",
+    "showMore": "查看更多",
+    "collapse": "收起",
+    "noplace": "無法載入地點資訊。",
+    "noresult": "沒有搜尋結果。",
+    "nocontent": "沒有相關作品。"
+  }
+}

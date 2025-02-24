@@ -1,0 +1,26 @@
+{
+  "ko": {
+    "setting": "설정",
+    "profile": "프로필",
+    "notification": "알림",
+    "language": "언어"
+  },
+  "en": {
+    "setting": "Settings",
+    "profile": "Profile",
+    "notification": "Notification",
+    "language": "Language"
+  },
+  "ja": {
+    "setting": "設定",
+    "profile": "プロフィール",
+    "notification": "通知",
+    "language": "言語"
+  },
+  "zh": {
+    "setting": "設定",
+    "profile": "個人資料",
+    "notification": "通知",
+    "language": "語言"
+  }
+}

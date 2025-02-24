@@ -1,0 +1,87 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: ${MYSQL_HOST}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 3s
+      retries: 5
+      start_period: 1s
+      timeout: 10s
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      TZ: Asia/Seoul
+      LANG: C.UTF-8
+    command: --skip-character-set-client-handshake
+    volumes:
+      - ../initdb:/docker-entrypoint-initdb.d
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "3305:3306"
+    networks:
+      - king
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      retries: 5
+      start_period: 1s
+      timeout: 10s
+    restart: always
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    ports:
+      - "6378:6379"
+    networks:
+      - king
+
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.1
+    container_name: elastic
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 5s
+      retries: 60
+      start_period: 5s
+      timeout: 10s
+    restart: always
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: false
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - king
+
+#  springboot:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    container_name: springboot
+#    restart: always
+#    env_file:
+#      - .env
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
+#      redis:
+#        condition: service_healthy
+#      elastic:
+#        condition: service_healthy
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - king
+
+volumes:
+  mysql-data:
+
+networks:
+  king:
+    driver: bridge

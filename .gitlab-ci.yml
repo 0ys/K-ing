@@ -1,0 +1,161 @@
+stages:
+  - build
+  - deploy
+
+frontend-build:
+  stage: build
+  image: node:22.13-alpine
+  tags:
+    - king-prod
+  before_script:
+    - apk add --no-cache openssh-client rsync
+    - eval $(ssh-agent -s)
+    - chmod 400 "$SSH_KEY"
+    - ssh-add "$SSH_KEY"
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
+  cache:
+    paths:
+      - king/node_modules
+  script:
+    - echo [INFO] 프론트엔드 파일 빌드 중
+    - cd king
+    - cat $CLIENT_ENV >> .env
+    - npm install
+    - npm run build
+    - echo [INFO] 프론트엔드 파일 전송중
+    - rsync -avz --delete -e "ssh -i $SSH_KEY" --rsync-path="mkdir -p /home/ubuntu/app/king/dist && rsync" dist/ $EC2_USER@$EC2_HOST:/home/ubuntu/app/king/dist/
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      changes:
+        - king/**/*
+      when: always
+
+backend-build:
+  stage: build
+  image: docker:24.0.5
+  services:
+    - name: docker:24.0.5-dind
+  tags:
+    - king-prod
+  variables:
+    IMAGE_NAME: $REGISTRY_USER/king-backend
+    IMAGE_TAG: $CI_COMMIT_SHA
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - sleep 1
+    - echo $REGISTRY_KEY | docker login --username $REGISTRY_USER --password-stdin
+  script:
+    - echo [INFO] 백엔드 파일 빌드 중
+    - cd king-backend
+    - cat $FCM_KEY >> src/main/resources/fcm-key.json
+    - cat $GOOGLE_TRANSLATE_KEY >> src/main/resources/translate-key.json
+    - echo [INFO] 도커허브에 업로드 중
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+    - docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:latest
+    - docker push $IMAGE_NAME:$IMAGE_TAG
+    - docker push $IMAGE_NAME:latest
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      changes:
+        - king-backend/**/*
+      when: always
+
+backend-deploy:
+  stage: deploy
+  tags:
+    - king-prod
+  before_script:
+    - apk add --no-cache openssh-client rsync
+    - eval $(ssh-agent -s)
+    - chmod 400 "$SSH_KEY"
+    - ssh-add "$SSH_KEY"
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
+  script:
+    - echo [INFO] 환경변수 복사중
+    - cat $SERVER_ENV >> .env
+    - rsync -avz --delete -e "ssh -i $SSH_KEY" nginx.conf $EC2_USER@$EC2_HOST:/home/ubuntu/app/
+    - rsync -avz --delete -e "ssh -i $SSH_KEY" docker-compose.yml $EC2_USER@$EC2_HOST:/home/ubuntu/app/
+    - rsync -avz --delete -e "ssh -i $SSH_KEY" .env $EC2_USER@$EC2_HOST:/home/ubuntu/app/
+    - rsync -avz --delete -e "ssh -i $SSH_KEY" initdb/ $EC2_USER@$EC2_HOST:/home/ubuntu/app/initdb/
+    - - ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd /home/ubuntu/app && docker-compose pull && docker-compose up -d springboot"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      changes:
+        - king-backend/**/*
+      when: always
+
+monitoring-restart:
+  stage: deploy
+  tags:
+    - king-prod
+  before_script:
+    - apk add --no-cache openssh-client rsync
+    - eval $(ssh-agent -s)
+    - chmod 400 "$SSH_KEY"
+    - ssh-add "$SSH_KEY"
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
+  script:
+    - echo [INFO] 설정파일 복사중
+    - rsync -avz --delete -e "ssh -i $SSH_KEY" prometheus.yml $EC2_USER@$EC2_HOST:/home/ubuntu/app/
+    - rsync -avz --delete -e "ssh -i $SSH_KEY" monitoring-docker-compose.yml $EC2_USER@$EC2_HOST:/home/ubuntu/app/
+    - - ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd /home/ubuntu/app && docker-compose -f monitoring-docker-compose.yml pull && docker-compose -f monitoring-docker-compose.yml up -d"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      changes:
+        - monitoring-docker-compose.yml
+        - prometheus.yml
+      when: always
+
+nginx-restart:
+  stage: deploy
+  tags:
+    - king-prod
+  before_script:
+    - apk add --no-cache openssh-client rsync
+    - eval $(ssh-agent -s)
+    - chmod 400 "$SSH_KEY"
+    - ssh-add "$SSH_KEY"
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
+  script:
+    - echo [INFO] 설정파일 복사중
+    - rsync -avz --delete -e "ssh -i $SSH_KEY" nginx.conf $EC2_USER@$EC2_HOST:/home/ubuntu/app/
+    - - ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd /home/ubuntu/app && docker-compose pull && docker-compose up -d nginx"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      changes:
+        - nginx.conf
+      when: always
+
+docker-restart:
+  stage: deploy
+  tags:
+    - king-prod
+  before_script:
+    - apk add --no-cache openssh-client rsync
+    - eval $(ssh-agent -s)
+    - chmod 400 "$SSH_KEY"
+    - ssh-add "$SSH_KEY"
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
+  script:
+    - echo [INFO] 설정파일 복사중
+    - cat $SERVER_ENV >> .env
+    - rsync -avz --delete -e "ssh -i $SSH_KEY" nginx.conf $EC2_USER@$EC2_HOST:/home/ubuntu/app/
+    - rsync -avz --delete -e "ssh -i $SSH_KEY" docker-compose.yml $EC2_USER@$EC2_HOST:/home/ubuntu/app/
+    - rsync -avz --delete -e "ssh -i $SSH_KEY" .env $EC2_USER@$EC2_HOST:/home/ubuntu/app/
+    - rsync -avz --delete -e "ssh -i $SSH_KEY" initdb/ $EC2_USER@$EC2_HOST:/home/ubuntu/app/initdb/
+    - - ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "cd /home/ubuntu/app && docker-compose pull && docker-compose up -d"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+      changes:
+        - docker-compose.yml
+      when: always

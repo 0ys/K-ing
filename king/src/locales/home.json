@@ -1,0 +1,50 @@
+{
+  "ko": {
+    "drama": "드라마",
+    "movie": "영화",
+    "show": "예능",
+    "cast": "인물",
+    "showAll": "전체보기",
+    "realtime": "실시간",
+    "daily": "일별",
+    "weekly": "주간별",
+    "trendingNow": "🔥지금 인기있는🔥",
+    "trendingSearch": "트렌딩 검색어"
+  },
+  "en": {
+    "drama": "Drama",
+    "movie": "Movie",
+    "show": "Show",
+    "cast": "Celebrity",
+    "showAll": "Show All",
+    "realtime": "Realtime",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "trendingNow": "🔥Trending Now🔥",
+    "trendingSearch": "Trending Keyword"
+  },
+  "ja": {
+    "drama": "ドラマ",
+    "movie": "映画",
+    "show": "バラエティ",
+    "cast": "人物",
+    "showAll": "すべて表示",
+    "realtime": "リアルタイム",
+    "daily": "日別",
+    "weekly": "週別",
+    "trendingNow": "🔥今人気🔥",
+    "trendingSearch": "トレンド検索"
+  },
+  "zh": {
+    "drama": "劇集",
+    "movie": "電影",
+    "show": "綜藝",
+    "cast": "人物",
+    "showAll": "查看全部",
+    "realtime": "即時",
+    "daily": "每日",
+    "weekly": "每週",
+    "trendingNow": "🔥現正熱門🔥",
+    "trendingSearch": "熱門搜尋"
+  }
+}

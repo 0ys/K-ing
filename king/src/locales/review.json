@@ -1,0 +1,30 @@
+{
+  "ko": {
+    "alphabet": "가나다순",
+    "popular": "인기순",
+    "latest": "최신순",
+    "noPhoto": "현재 인증샷이 없어요 📸",
+    "desc": "첫 번째 인증샷을 남겨보세요!"
+  },
+  "en": {
+    "alphabet": "Alphabetical",
+    "popular": "Most Popular",
+    "latest": "Latest",
+    "noPhoto": "No photos available 📸",
+    "desc": "Be the first to upload a proof shot!"
+  },
+  "ja": {
+    "alphabet": "あいうえお順",
+    "popular": "人気順",
+    "latest": "最新順",
+    "noPhoto": "現在、認証ショットがありません 📸",
+    "desc": "最初の認証ショットを投稿してみてください！"
+  },
+  "zh": {
+    "alphabet": "字母順序",
+    "popular": "熱門排序",
+    "latest": "最新排序",
+    "noPhoto": "目前沒有認證照 📸",
+    "desc": "快來上傳第一張認證照吧！"
+  }
+}

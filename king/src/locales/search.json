@@ -1,0 +1,18 @@
+{
+  "ko": {
+    "placeholder": "검색어를 입력하세요.",
+    "placeholder_place": "장소를 검색하세요."
+  },
+  "en": {
+    "placeholder": "Enter a search term.",
+    "placeholder_place": "Search for a place."
+  },
+  "ja": {
+    "placeholder": "検索語を入力してください。",
+    "placeholder_place": "場所を検索してください。"
+  },
+  "zh": {
+    "placeholder": "请输入搜索词。",
+    "placeholder_place": "搜索地点。"
+  }
+}

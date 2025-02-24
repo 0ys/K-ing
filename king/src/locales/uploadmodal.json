@@ -1,0 +1,50 @@
+{
+  "ko": {
+    "draftTitle": "임시저장 불러오기",
+    "draftBody": "임시저장된 컨텐츠를 불러오시겠습니까?",
+    "yes": "확인",
+    "no": "취소",
+    "loadingTitle": "게시글 업로드",
+    "loadingBody": "업로드 중",
+    "postUpload": "인증샷 업로드",
+    "curationUpload": "큐레이션 발행",
+    "deleteTitle": "삭제하기",
+    "deleteBody": "정말 삭제하시겠습니까?"
+  },
+  "en": {
+    "draftTitle": "Load Draft",
+    "draftBody": "Would you like to load the saved draft content?",
+    "yes": "Yes",
+    "no": "No",
+    "loadingTitle": "Uploading Post",
+    "loadingBody": "Uploading",
+    "postUpload": "Upload Proof Shot",
+    "curationUpload": "Publish Curation",
+    "deleteTitle": "Delete",
+    "deleteBody": "Are you sure you want to delete?"
+  },
+  "ja": {
+    "draftTitle": "ドラフトの読み込み",
+    "draftBody": "保存されたドラフトコンテンツを読み込みますか？",
+    "yes": "はい",
+    "no": "いいえ",
+    "loadingTitle": "投稿のアップロード",
+    "loadingBody": "アップロード中",
+    "postUpload": "認証ショットのアップロード",
+    "curationUpload": "キュレーションの発行",
+    "deleteTitle": "削除",
+    "deleteBody": "本当に削除しますか？"
+  },
+  "zh": {
+    "draftTitle": "加载草稿",
+    "draftBody": "是否加载已保存的草稿内容？",
+    "yes": "确定",
+    "no": "取消",
+    "loadingTitle": "上传帖子",
+    "loadingBody": "正在上传",
+    "postUpload": "上传认证照片",
+    "curationUpload": "发布策展",
+    "deleteTitle": "删除",
+    "deleteBody": "您确定要删除吗？"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "ko": {
+    "findRoute": "길찾기",
+    "share": "공유",
+    "content": "관련 작품",
+    "showMore": "더보기",
+    "collapse": "접기",
+    "noplace": "장소 정보를 불러올 수 없습니다.",
+    "noresult": "검색 결과가 없습니다.",
+    "naverMap": "네이버 지도",
+    "googleMap": "구글 지도",
+    "actionButton": "다른 팬의 인증샷이 궁금하다면?",
+    "break": "휴무",
+    "openAllYear": "연중무휴",
+    "nocontent": "관련 작품이 없습니다."
+  },
+  "en": {
+    "findRoute": "Find Route",
+    "share": "Share",
+    "content": "Related Content",
+    "showMore": "Show More",
+    "collapse": "Collapse",
+    "noplace": "Unable to load place information.",
+    "noresult": "No search results found.",
+    "naverMap": "Naver Map",
+    "googleMap": "Google Map",
+    "actionButton": "Curious about other fans' proof shots?",
+    "break": "Closed",
+    "openAllYear": "Open all year",
+    "nocontent": "No related content available."
+  },
+  "ja": {
+    "findRoute": "ルート検索",
+    "share": "共有",
+    "content": "関連作品",
+    "showMore": "もっと見る",
+    "collapse": "閉じる",
+    "noplace": "場所情報を読み込めません。",
+    "noresult": "検索結果がありません。",
+    "naverMap": "ネイバー マップ",
+    "googleMap": "グーグル マップ",
+    "actionButton": "他のファンの認証ショットが気になりますか？",
+    "break": "定休日",
+    "openAllYear": "年中無休",
+    "nocontent": "関連作品がありません。"
+  },
+  "zh": {
+    "findRoute": "查找路線",
+    "share": "分享",
+    "content": "相關作品",
+    "showMore": "查看更多",
+    "collapse": "收起",
+    "noplace": "無法載入地點資訊。",
+    "noresult": "沒有搜尋結果。",
+    "naverMap": "Naver 地圖",
+    "googleMap": "Google 地圖",
+    "actionButton": "想看看其他粉絲的認證照嗎？",
+    "break": "休息日",
+    "openAllYear": "全年無休",
+    "nocontent": "沒有相關作品。"
+  }
+}

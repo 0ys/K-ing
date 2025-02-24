@@ -1,0 +1,42 @@
+{
+  "ko": {
+    "logoutError": "로그아웃에 실패했습니다. 다시 시도해주세요.",
+    "logout": "로그아웃",
+    "deleteAccount": "회원 탈퇴",
+    "accountDeleted": "계정이 삭제되었습니다.",
+    "unauthorized": "권한이 없습니다. 다시 로그인해주세요.",
+    "forbidden": "계정 삭제 권한이 없습니다.",
+    "userNotFound": "회원탈퇴하려는 사용자를 찾을 수 없습니다.",
+    "deleteFailed": "계정 삭제에 실패했습니다. 다시 시도해주세요."
+  },
+  "en": {
+    "logoutError": "Logout failed. Please try again.",
+    "logout": "Logout",
+    "deleteAccount": "Delete Account",
+    "accountDeleted": "Your account has been deleted.",
+    "unauthorized": "You are not authorized. Please log in again.",
+    "forbidden": "You do not have permission to delete the account.",
+    "userNotFound": "The user you are trying to delete was not found.",
+    "deleteFailed": "Failed to delete the account. Please try again."
+  },
+  "ja": {
+    "logoutError": "ログアウトに失敗しました。もう一度お試しください。",
+    "logout": "ログアウト",
+    "deleteAccount": "アカウント削除",
+    "accountDeleted": "アカウントが削除されました。",
+    "unauthorized": "権限がありません。再度ログインしてください。",
+    "forbidden": "アカウントを削除する権限がありません。",
+    "userNotFound": "退会しようとしているユーザーが見つかりません。",
+    "deleteFailed": "アカウントの削除に失敗しました。もう一度お試しください。"
+  },
+  "zh": {
+    "logoutError": "登出失败。请重试。",
+    "logout": "登出",
+    "deleteAccount": "删除账户",
+    "accountDeleted": "您的账户已被删除。",
+    "unauthorized": "您没有权限。请重新登录。",
+    "forbidden": "您没有删除账户的权限。",
+    "userNotFound": "找不到要注销的用户。",
+    "deleteFailed": "删除账户失败。请重试。"
+  }
+}

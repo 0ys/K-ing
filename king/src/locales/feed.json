@@ -1,0 +1,38 @@
+{
+  "ko": {
+    "title": "게시글",
+    "commentTitle": "댓글",
+    "askDelete": "게시글을 삭제하시겠습니까?",
+    "alertDelete": "게시글이 삭제되었습니다.",
+    "seeOriginal": "원본 보기",
+    "seeTranslate": "번역 보기",
+    "commentInput": "댓글 추가.."
+  },
+  "en": {
+    "title": "Post",
+    "commentTitle": "Comments",
+    "askDelete": "Do you want to delete the post?",
+    "alertDelete": "The post has been deleted.",
+    "seeOriginal": "View Original",
+    "seeTranslate": "View Translation",
+    "commentInput": "Add a comment to..."
+  },
+  "ja": {
+    "title": "投稿",
+    "commentTitle": "コメント",
+    "askDelete": "投稿を削除しますか？",
+    "alertDelete": "投稿が削除されました。",
+    "seeOriginal": "元の内容を見る",
+    "seeTranslate": "翻訳を見る",
+    "commentInput": "へのコメントを追加..."
+  },
+  "zh": {
+    "title": "帖子",
+    "commentTitle": "评论",
+    "askDelete": "您要删除这篇帖子吗？",
+    "alertDelete": "帖子已被删除。",
+    "seeOriginal": "查看原文",
+    "seeTranslate": "查看翻译",
+    "commentInput": "添加评论至..."
+  }
+}

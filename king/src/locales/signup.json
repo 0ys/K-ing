@@ -1,0 +1,42 @@
+{
+  "ko": {
+    "title": "사용자 정보 입력",
+    "nickname": "닉네임",
+    "nicknamePlaceholder": "닉네임을 입력하세요.",
+    "nicknameChecking": "닉네임 중복 검사 중...",
+    "nicknameAvailable": "사용 가능한 닉네임입니다!",
+    "nicknameErrorLength": "닉네임은 50자 이내여야 합니다.",
+    "nicknameErrorWhitespace": "닉네임은 공백만 입력할 수 없습니다.",
+    "nicknameErrorDuplicate": "중복된 닉네임입니다."
+  },
+  "en": {
+    "title": "User Information",
+    "nickname": "Nickname",
+    "nicknamePlaceholder": "Enter your nickname",
+    "nicknameChecking": "Checking nickname availability...",
+    "nicknameAvailable": "Nickname is available!",
+    "nicknameErrorLength": "Nickname must be within 50 characters.",
+    "nicknameErrorWhitespace": "Nickname cannot contain only spaces.",
+    "nicknameErrorDuplicate": "This nickname is already taken."
+  },
+  "ja": {
+    "title": "ユーザー情報入力",
+    "nickname": "ニックネーム",
+    "nicknamePlaceholder": "ニックネームを入力してください。",
+    "nicknameChecking": "ニックネームの確認中...",
+    "nicknameAvailable": "使用可能なニックネームです！",
+    "nicknameErrorLength": "ニックネームは50文字以内で入力してください。",
+    "nicknameErrorWhitespace": "ニックネームは空白のみでは使用できません。",
+    "nicknameErrorDuplicate": "このニックネームは既に使用されています。"
+  },
+  "zh": {
+    "title": "输入用户信息",
+    "nickname": "昵称",
+    "nicknamePlaceholder": "请输入您的昵称",
+    "nicknameChecking": "检查昵称可用性...",
+    "nicknameAvailable": "昵称可用！",
+    "nicknameErrorLength": "昵称必须在50个字符以内。",
+    "nicknameErrorWhitespace": "昵称不能仅包含空格。",
+    "nicknameErrorDuplicate": "此昵称已被占用。"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "ko": {
+    "editProfile": "프로필 수정",
+    "nickname": "닉네임",
+    "description": "소개"
+  },
+  "en": {
+    "editProfile": "Edit Profile",
+    "nickname": "Nickname",
+    "description": "Bio"
+  },
+  "ja": {
+    "editProfile": "プロフィール編集",
+    "nickname": "ニックネーム",
+    "description": "自己紹介"
+  },
+  "zh": {
+    "editProfile": "编辑个人资料",
+    "nickname": "昵称",
+    "description": "简介"
+  }
+}

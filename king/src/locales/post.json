@@ -1,0 +1,58 @@
+{
+  "ko": {
+    "title": "인증샷 업로드",
+    "draft": "임시 저장",
+    "upload": "공유",
+    "save": "저장",
+    "cancel": "취소",
+    "uploadPhoto": "사진 업로드하기",
+    "reuploadPhoto": "사진 재업로드하기",
+    "photoDesc": "PNG, JPG 형식만 지원됩니다.",
+    "titlePlaceholder": "문구 추가.. (1000자 이내 / 한글: 500자)",
+    "public": "공개",
+    "alertDraftSaved": "임시저장이 완료되었습니다.",
+    "alertMaxLengthExceed": "글자수는 최대 1000자까지 입력 가능합니다. (한글: 500자 이내)"
+  },
+  "en": {
+    "title": "Upload Post",
+    "draft": "Save Draft",
+    "upload": "Share",
+    "save": "Save",
+    "cancel": "Cancel",
+    "uploadPhoto": "Upload a Photo",
+    "reuploadPhoto": "Reupload a Photo",
+    "photoDesc": "Only PNG, JPG formats are supported.",
+    "titlePlaceholder": "Add a caption.. (within 1000 characters / 500 for Korean)",
+    "public": "Public",
+    "alertDraftSaved": "Draft saved successfully.",
+    "alertMaxLengthExceed": "You can enter up to 1000 characters. (500 characters for Korean)"
+  },
+  "ja": {
+    "title": "認証ショットのアップロード",
+    "draft": "ドラフト保存",
+    "upload": "共有",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "uploadPhoto": "写真をアップロード",
+    "reuploadPhoto": "写真を再アップロード",
+    "photoDesc": "PNG、JPG形式のみ対応しています。",
+    "titlePlaceholder": "キャプションを追加..（1000文字以内 / 韓国語は500文字）",
+    "public": "公開",
+    "alertDraftSaved": "ドラフトの保存が完了しました。",
+    "alertMaxLengthExceed": "文字数は最大1000文字まで入力できます。（韓国語の場合は500文字以内）"
+  },
+  "zh": {
+    "title": "上传证明照片",
+    "draft": "保存草稿",
+    "upload": "分享",
+    "save": "保存",
+    "cancel": "取消",
+    "uploadPhoto": "上传照片",
+    "reuploadPhoto": "重新上传照片",
+    "photoDesc": "仅支持PNG、JPG格式。",
+    "titlePlaceholder": "添加文字..（1000字以内 / 韩文为500字）",
+    "public": "公开",
+    "alertDraftSaved": "草稿保存完成。",
+    "alertMaxLengthExceed": "最多可输入1000个字符。（韩文为500个字符以内）"
+  }
+}
